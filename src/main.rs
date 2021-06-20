@@ -57,7 +57,7 @@ fn main() {
             let html: String = markdown::to_html(&content);
             let split = matter.split("\n");
             let mut base_dir: String = config.target_dir.to_owned();
-            let mut dest = Path::join(Path::new(&base_dir), Path::new("ViGEmClient.dll"));
+            // let mut dest = Path::new(&base_dir);
             for s in split {
                 if s.contains("created") {
                     let vec: Vec<&str> = s.split(":").collect();
@@ -75,15 +75,6 @@ fn main() {
                     println!("{:?}", jfile_name);
                     let mut file = File::create(&jfile_name).unwrap();
                     file.write_all(html.as_bytes()).unwrap();
-                } else {
-                    if !Path::new(&dest).exists() {
-                        base_dir.push_str("/");
-                        base_dir.push_str(&file_name);
-                        fs::create_dir_all(&base_dir).unwrap();
-                        base_dir.push_str("/index.html");
-                        let mut file = File::create(&base_dir).unwrap();
-                        file.write_all(html.as_bytes()).unwrap();
-                    }
                 }
             }
         }
