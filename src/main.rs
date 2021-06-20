@@ -70,9 +70,10 @@ fn main() {
                     // println!("{}", base_dir);
                     fs::create_dir_all(&dest).unwrap();
                     // base_dir.push_str("/index.html");
-                    let jfile_name = Path::join(&dest, Path::new("/index.html"));
-                    
+                    let jfile_name = Path::new(&dest).join("index.html");
                     println!("{:?}", jfile_name);
+                    
+                    // println!("jfile_name {:?}", jfile_name);
                     let mut file = File::create(&jfile_name).unwrap();
                     file.write_all(html.as_bytes()).unwrap();
                 }
