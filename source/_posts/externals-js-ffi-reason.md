@@ -1,7 +1,7 @@
 ---
 title: 傻瓜式类型安全绑定从 JS 到 Reason
-description: 傻瓜式类型安全绑定从 JS 到 Reason
 created: 2018/05/25
+description: 傻瓜式类型安全绑定从 JS 到 Reason
 author: lanqy
 ---
 

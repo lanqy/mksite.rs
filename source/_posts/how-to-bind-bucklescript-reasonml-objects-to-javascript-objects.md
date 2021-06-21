@@ -4,7 +4,6 @@ description: 如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象
 created: 2018/06/15
 author: lanqy
 ---
-
 # 如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象。
 
 > 注1：当我在本文中说 BuckleScript 时，我指的是 OCaml。

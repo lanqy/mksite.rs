@@ -4,7 +4,6 @@ description: Erlang 入门
 created: 2018/07/31
 author: lanqy
 ---
-
 # Erlang 入门
 
  译自：https://qiita.com/oskimura/items/87910c2e76cac075ee7f

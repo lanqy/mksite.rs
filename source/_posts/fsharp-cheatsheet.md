@@ -1,7 +1,7 @@
 ---
 title: F# 备忘单
-description: F# 备忘单
 created: 2018/07/19
+description: F# 备忘单
 author: lanqy
 ---
 

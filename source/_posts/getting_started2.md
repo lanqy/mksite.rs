@@ -1,10 +1,9 @@
 ---
 title: OCaml简介第2部分
-description: OCaml简介第2部分
 created: 2018/07/13
+description: OCaml简介第2部分
 author: lanqy
 ---
-
 ## OCaml简介第 2 部分
 
 译自：https://qiita.com/zenwerk/items/603bd383fe5c6b8cace3

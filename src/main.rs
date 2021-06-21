@@ -35,50 +35,72 @@ fn main() {
     let json_file_path = Path::new("./config.json");
     let file = File::open(json_file_path).expect("file not found");
     let config: Config = serde_json::from_reader(file).expect("error while reading");
+    let paths = fs::read_dir(config.source_dir).unwrap();
+    for path in paths {
+      
+      let entry = path.unwrap();
+      
+      let entry_path = entry.path();
+      
+      let file_name = entry_path.file_name().unwrap();
+      
+      let file_name_as_str = file_name.to_str().unwrap();
+      
+      let file_name_as_string = String::from(file_name_as_str);
+        let markdown_content = std::fs::read_to_string(&entry_path).unwrap();
 
-   println!("site_name: {}", config.site_name);
-   println!("static_dir: {}", config.static_dir);
-   println!("base_url: {}", config.base_url);
-   println!("source_dir: {}", config.source_dir);
-   println!("target_dir: {}", config.target_dir);
-   println!("nav_template_file: {}", config.nav_template_file);
-   println!("post_template_file: {}", config.post_template_file);
-   println!("item_template_file: {}", config.item_template_file);
-   fs::remove_dir_all(&config.target_dir);
-    for entry in WalkDir::new(config.source_dir) {
-        let entry = entry.unwrap();
-        if !entry.file_type().is_dir() {
-            let path_string = entry.path().display().to_string();
-            let file_name_ff = entry.path().file_name().unwrap().to_str().unwrap();
-            let file_name = file_name_ff.replace(".md", "");
-            println!("{}", file_name.replace(".md", ""));
-            let input = std::fs::read_to_string(path_string).unwrap();
-            let (matter, content) = matter::matter(&input).unwrap();
-            let html: String = markdown::to_html(&content);
-            let split = matter.split("\n");
-            let mut base_dir: String = config.target_dir.to_owned();
-            // let mut dest = Path::new(&base_dir);
-            for s in split {
-                if s.contains("created") {
-                    let vec: Vec<&str> = s.split(":").collect();
-                    // base_dir.push_str(&vec[1].trim().to_string());
-                    let path = Path::join(Path::new(&vec[1].trim()),Path::new(&file_name));
-                    let dest = Path::join(Path::new(&base_dir), Path::new(&path));
-                    println!("{:?}", dest);
-                    // base_dir.push_str("/");
-                    // base_dir.push_str(&file_name);
-                    // println!("{}", base_dir);
-                    fs::create_dir_all(&dest).unwrap();
-                    // base_dir.push_str("/index.html");
-                    let jfile_name = Path::new(&dest).join("index.html");
-                    println!("{:?}", jfile_name);
-                    
-                    // println!("jfile_name {:?}", jfile_name);
-                    let mut file = File::create(&jfile_name).unwrap();
-                    file.write_all(html.as_bytes()).unwrap();
-                }
-            }
-        }
+        let front_matter_as_vec_str = parse_front_matter(&markdown_content);
+        // let (matter, content) = matter::matter(&input).unwrap();
+        
+      println!("----- {:?}", front_matter_as_vec_str);
+        // let html: String = markdown::to_html(&content);
+        // let split = matter.split("\n");
+        // let base_dir: String = config.target_dir.to_owned();
+        // for s in split {
+        //     if s.contains("created") {
+        //         let vec: Vec<&str> = s.split(":").collect();
+        //         let path = Path::join(Path::new(&vec[1].trim()),Path::new(&file_name_as_string));
+        //         let dest = Path::join(Path::new(&base_dir), Path::new(&path));
+        //         fs::create_dir_all(&dest).unwrap();
+        //         let jfile_name = Path::new(&dest).join("index.html");
+        //         let mut file = File::create(&jfile_name).unwrap();
+        //         file.write_all(html.as_bytes()).unwrap();
+        //     }
+        // }
     }
-    fs::copy(config.static_dir, config.target_dir);
+}
+
+pub fn parse_front_matter(contents: &str) -> Vec<&str> {
+  let mut is_front_matter: bool = false;
+  let mut counter_meet_delimiter: u8 = 0;
+  let mut front_matter = Vec::new();
+
+  for (line_number, line) in contents.lines().enumerate() {
+      if (line_number == 0) & (line != "---") {
+          // break the loop, if first line is not "---"
+          break;
+      } else if (line_number == 0) & (line == "---") {
+          // if first line is "---", increase counter_meet_delimiter and set is_front_matter = true
+          counter_meet_delimiter += 1;
+          is_front_matter = true;
+          continue;
+      }
+
+      if is_front_matter & (line == "---") {
+          // if encounter the second delimiter "---", then break the loop and increase counter_meet_delimiter
+          counter_meet_delimiter += 1;
+          break;
+      }
+
+      if is_front_matter & ((line != "---") | (line != "")) {
+          front_matter.push(line);
+      }
+  }
+
+  if counter_meet_delimiter == 1 {
+      // if there are not the closed delimiter
+      front_matter = Vec::new();
+  }
+
+  front_matter
 }

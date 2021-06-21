@@ -4,7 +4,6 @@ description: OCaml简介第6部分
 created: 2018/07/17
 author: lanqy
 ---
-
 ## OCaml简介第6部分
 
 译自：https://qiita.com/zenwerk/items/97d370d457008d8f01de

@@ -4,7 +4,6 @@ description: JavaScript 的工作原理：引擎，运行时和调用堆栈的�
 created: 2018/10/22
 author: lanqy
 ---
-
 # JavaScript 的工作原理：引擎，运行时和调用堆栈的概述
 
 随着 JavaScript 变得越来越流行，团队正在利用其在堆栈中的多个级别的支持 - 前端，后端，混合应用程序，嵌入式设备等等。

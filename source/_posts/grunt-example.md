@@ -4,7 +4,6 @@ description: 使用 Gruntjs 压缩合并前端静态资源（图片、JavaScript
 created: 2018/05/21
 author: lanqy
 ---
-
 # 使用 Gruntjs 压缩合并前端静态资源（图片、JavaScript 和 CSS ）
 ### 安装环境：
 #### Nodejs：https://nodejs.org/en/ 安装最新版本

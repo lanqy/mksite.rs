@@ -4,7 +4,6 @@ description: 开始使用 ReasonML 和 React Native
 created: 2018/05/30
 author: lanqy
 ---
-
 # 开始使用 ReasonML 和 React Native
 
 译自：https://blog.callstack.io/getting-started-with-reasonml-and-react-native-299476389c3e

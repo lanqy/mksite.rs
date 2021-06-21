@@ -1,7 +1,7 @@
 ---
 title: 在 ReasonReact 中创建全局状态
-description: 在 ReasonReact 中创建全局状态
 created: 2018/06/21
+description: 在 ReasonReact 中创建全局状态
 author: lanqy
 ---
 # 在 ReasonReact 中创建全局状态

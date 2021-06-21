@@ -1,7 +1,7 @@
 ---
 title: Erlang maps 函数 “简单” 的解释
-description: Erlang maps 函数 “简单” 的解释
 created: 2018/08/01
+description: Erlang maps 函数 “简单” 的解释
 author: lanqy
 ---
 # Erlang maps 函数 “简单” 的解释

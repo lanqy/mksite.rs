@@ -4,7 +4,6 @@ description: HTML5 Canvas的命中区域检测以及如何侦听Canvas形状上�
 created: 2020/12/09
 author: lanqy
 ---
-
 # HTML5 Canvas的命中区域检测以及如何侦听Canvas形状上的Click事件
 
 您需要一个简单的 onClick 画布形状吗？ 但是 canvas 没有此类监听器的 API。 您只能在整个画布上监听事件，而不能在部分画布上监听事件。 我将描述两种主要方法来解决此问题。

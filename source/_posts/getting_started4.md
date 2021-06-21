@@ -4,7 +4,6 @@ description: OCaml简介第4部分
 created: 2018/07/15
 author: lanqy
 ---
-
 ## OCaml简介第4部分
 
 译自：https://qiita.com/zenwerk/items/244b84bee48bf61d2a51

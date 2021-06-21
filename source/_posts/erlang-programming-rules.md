@@ -1,7 +1,7 @@
 ---
 title: 编程规则和约定
-description: 编程规则和约定
 created: 2018/07/05
+description: 编程规则和约定
 author: lanqy
 ---
 # 编程规则和约定

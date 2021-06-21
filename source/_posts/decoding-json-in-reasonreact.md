@@ -1,7 +1,7 @@
 ---
 title: 在 ReasonReact中解码 JSON
-description: 在 ReasonReact中解码 JSON
 created: 2018/05/28
+description: 在 ReasonReact中解码 JSON
 author: lanqy
 ---
 # 在 ReasonReact中解码 JSON
