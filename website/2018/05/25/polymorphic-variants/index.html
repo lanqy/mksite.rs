@@ -1,0 +1,133 @@
+<h1>Reason 中的多态性与普通变体</h1>
+<p>译自： http://blog.klipse.tech/reason/2018/03/12/blog-reason-types.html</p>
+<h2>介绍</h2>
+<p>变体是 Reasonml 最酷的特性之一。</p>
+<p>在<a href="https://reasonml.github.io/docs/en/variant.html">官方文档</a>中，他们提到了变体的限制（也称为普通变体）：</p>
+<blockquote>
+<p>一个函数不能接受由两个不同变体共享的任意构造函数。</p>
+</blockquote>
+<p>他们还提到，使用多态变体可以克服这个限制。</p>
+<p>本文的目的是揭示普通变体的局限性，并看看多态性变体如何克服这一限制。我们希望我们带着狗和郁金香带来的例子会让这篇文章的阅读有些愉快。</p>
+<p><img src="/images/dog_tulip.jpg" alt="狗和郁金香" /></p>
+<h2>普通变体 - 简要回顾</h2>
+<p>假设你有一个 <code>animal</code> 变种</p>
+<pre><code class="language-ocaml"># type animal =
+| Dog
+| Cat
+
+type animal = Dog | Cat
+</code></pre>
+<p>并且你想写一个函数来将 <code>animal</code> 字符串化。</p>
+<pre><code class="language-ocaml"># let string_of_animal = x =&gt;
+switch (x) {
+  | Dog =&gt; &quot;dog&quot;
+  | Cat =&gt; &quot;cat&quot;
+};
+
+val string_of_animal : animal =&gt; string = &lt;fun&gt;
+</code></pre>
+<p>现在，一只 <code>Dog</code> 是一只 “狗” ，一只 <code>Cat</code> 是一只“猫”：</p>
+<pre><code class="language-ocaml"># &quot;The &quot; ++ string_of_animal(Dog) ++ &quot; bites the &quot; ++ string_of_animal(Cat);
+- : string = &quot;The dog bites the cat&quot;
+</code></pre>
+<p>到现在为止还挺好。</p>
+<p>现在让我们对鲜花做同样的事情：</p>
+<pre><code class="language-ocaml"># type flower =
+| Rose
+| Tulip;
+
+type flower = Rose | Tulip
+
+# let string_of_flower = x =&gt;
+switch (x) {
+  |Rose =&gt; &quot;rose&quot;
+  |Tulip =&gt; &quot;tulip&quot;
+};
+
+val string_of_flower : flower =&gt; string = &lt;fun&gt;
+
+# let a = &quot;The &quot; ++ string_of_flower(Rose) ++ &quot; is more beautiful than the &quot; ++ string_of_flower(Tulip);
+
+val a : string = &quot;The rose is more beautiful than the tulip&quot;
+</code></pre>
+<h2>变体的局限性</h2>
+<p>现在如果你尝试写一个函数使花和动物字符串化会发生什么？</p>
+<pre><code class="language-ocaml"># let string_of_flower_or_animal = x =&gt;
+switch (x) {
+  |Rose =&gt; &quot;rose&quot;
+  |Tulip =&gt; &quot;tulip&quot;
+  |Dog =&gt; &quot;dog&quot;
+  |Cat =&gt; &quot;cat&quot;
+};
+
+File &quot;&quot;, line 5, characters 4-7:
+Error: This variant pattern is expected to have type flower
+The constructor Dog does not belong to type flower
+/* 文件“”，第5行，字符4-7：
+错误：这种变体模式预计会有花类型
+构造函数Dog不属于花的类型 */
+</code></pre>
+<p>构造函数 <code>Dog</code> 不属于 <code>flower</code> 类型，在这种情况下，ocaml 不会立即创建 <code>flower_or_animal</code> 类型！</p>
+<p>普通变体的另一个限制是，你不能在列表或数组中混合 <code>animal</code> 和 <code>flower</code> 类型元素：</p>
+<pre><code class="language-ocaml"># let a = [Dog, Cat, Rose, Tulip];
+
+File &quot;&quot;, line 1, characters 19-23:
+Error: This variant expression is expected to have type animal
+The constructor Rose does not belong to type animal
+
+/* 文件“”，第1行，字符19-23：
+错误：预计此变体表达式具有 Dog 类型
+构造函数 Rose 不属于 Dog 类型 */
+</code></pre>
+<p>欢迎来到多态变体的世界！</p>
+<h2>多态变体</h2>
+<p>在语法上，多态变体通过反向撇号区别于普通变体：</p>
+<pre><code class="language-ocaml"># let myDog = `Dog;
+val myDog : [&gt; `Dog] = `Dog
+</code></pre>
+<p>请注意，与普通变体不同，多态变体可以在没有显式类型声明的情况下使用。他们的类型是自动推断的。</p>
+<p>当然，它也适用于参数化的变体：</p>
+<pre><code class="language-ocaml"># let myNumber = `Int(4);
+val myNumber : [&gt; `Int of int ] = `Int 4
+</code></pre>
+<p>现在，让我们看看如何使用多态类型来编写我们的 <code>string_of_flower_or_animal</code> 函数：</p>
+<pre><code class="language-ocaml"># let string_of_flower_or_animal = x =&gt;
+switch (x) {
+  |`Rose =&gt; &quot;rose&quot;
+  |`Tulip =&gt; &quot;tulip&quot;
+  |`Dog =&gt; &quot;dog&quot;
+  |`Cat =&gt; &quot;cat&quot;
+};
+
+val string_of_flower_or_animal : [&lt; `Cat | `Dog | `Rose | `Tulip ] =&gt; string = &lt;fun&gt;
+</code></pre>
+<p>请注意，系统已经自动推断函数参数的类型：它是[&lt; `Cat | `Dog| `Rose | `Tulip ]。你可能想知道 <code>&lt;</code> 符号 的含义是什么。</p>
+<p>在回答这个问题之前，让我们看看多态变体如何让我们在列表中混合不同类型的元素：</p>
+<pre><code class="language-ocaml"># let myNatrue = [`Dog, `Cat, `Rose, `Tulip];
+val myNatrue : [&gt; `Cat | `Dog | `Rose | `Tulip] list = [`Dog; `Cat; `Rose; `Tulip]
+</code></pre>
+<p>现在，列表的类型是：<code>[&gt; \</code>Cat | `Dog | `Rose | `Tulip] list 。</p>
+<h2>上限和下限</h2>
+<p>现在是时候解释多态变体中 <code>&lt;</code> 和 <code>&gt;</code> 的含义了。</p>
+<p><code>&gt;</code> 在变体类型的开头标记类型 a 是<strong>开放的</strong>以便与其他变体类型组合。我们可以解读类型  [&gt; `Cat | `Dog | `Rose | `Tulip ] 为描述一种变体，其标签包括 `Cat，`Dog，`Rose和 `Tulip，但也可能包含更多标签。</p>
+<p>换句话说，你可以大致翻译 <code>&gt;</code> 来表示：“这些标签或更多”。</p>
+<p>事实上，我们可以连接动物列表和花名单：</p>
+<pre><code class="language-ocaml">let myAnimals = [`Dog, `Cat];
+let myFlowers = [`Rose, `Tulip];
+let myThings = List.concat([myAnimals, myFlowers]);
+
+val myAnimals : [&gt; `Cat | `Dog] list = [`Dog; `Cat]
+val myFlowers : [&gt; `Rose | `Tulip] list = [`Rose; `Tulip]
+val myThings : [&gt; `Cat | `Dog | `Rose | `Tulip] list = [`Dog; `Cat; `Rose; `Tulip]
+</code></pre>
+<p><code>&lt;</code> 变体类型的开始部分表示 “这些标签或更少”。例如，在我们上面定义的 <code>string_of_flower_or_animal</code> 函数中，参数被推断为类型  [&lt; `Cat | `Dog | `Rose| `Tulip]。</p>
+<p>事实上，这个函数没有办法处理具有除 `Cat，`Dog，`Rose 和 `Tulip 之外的标签的值。</p>
+<h2>结论</h2>
+<p>你现在可能会问自己为什么不总是使用多态变体。</p>
+<p>答案是多态变体的灵活性是有代价的。</p>
+<ul>
+<li>它们比普通变体更复杂</li>
+<li>他们不太可能捕捉那些普通变体的错误 - 正是由于它们允许的灵活性</li>
+<li>它们比普通变体重一点，性能较差</li>
+</ul>
+<p>请务必阅读 Real World Ocaml 的 <a href="https://realworldocaml.org/v1/en/html/variants.html#polymorphic-variants">这一章</a>，深入了解普通和多态变体。在本章最后，他们详细解释了多态变体相对于普通变体的优点和缺点。</p>

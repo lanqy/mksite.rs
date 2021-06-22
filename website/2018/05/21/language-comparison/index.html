@@ -1,0 +1,259 @@
+<h1>通过代数数据类型和模式匹配进行语言比较：Koka，Rust，Haxe，Swift，Elm，PureScript，Haskell，OCaml，ReasonML，Kotlin，Scala，Dotty，Ruby，TypeScript</h1>
+<h2>代数数据类型</h2>
+<h3>Koka</h3>
+<pre><code class="language-haskell">type color {
+  Red
+  Green
+  Blue
+  Rgb( r : int, g : int, b: int )
+}
+</code></pre>
+<p>或</p>
+<pre><code class="language-haskell">type color {
+  Red; Green; Blue; Rgb( r : int, g : int, b: int )
+}
+</code></pre>
+<h3>rust</h3>
+<pre><code class="language-rust">enum Color {
+ Red,
+ Green,
+ Blue,
+ Rgb { r: u8, g: u8, b: u8 }
+}
+</code></pre>
+<h3>Haxe</h3>
+<pre><code class="language-haxe">enum Color {
+  Red;
+  Green;
+  Blue;
+  Rgb(r: Int, g: Int, b: Int);
+}
+</code></pre>
+<h3>swift</h3>
+<pre><code class="language-swift">enum Color {
+  case Red, Green, Blue, Rgb(r: Int, g: Int, b: Int)
+}
+</code></pre>
+<h3>Elm</h3>
+<pre><code class="language-elm">type Color = Red | Green | Blue | Rgb { r: Int, g: Int, b: Int }
+</code></pre>
+<h3>PureScript</h3>
+<pre><code class="language-haskell">data Color = Red | Blue | Green | Rgb{ r :: Int, g :: Int, b :: Int }
+</code></pre>
+<h3>Haskell</h3>
+<pre><code class="language-haskell">data Color = Red | Green | Blue | Rgb {r :: Int, g :: Int, b :: Int}
+</code></pre>
+<h3>OCaml</h3>
+<pre><code class="language-ocaml">type rgb = { r: int; g: int; b: int }
+type color = Red | Green | Blue | Rgb of rgb
+</code></pre>
+<h3>ReasonML</h3>
+<pre><code class="language-ocaml">type rgb = { r: int, g: int, b: int };
+type color =
+  | Red
+  | Green
+  | Blue
+  | Rgb(rgb);
+</code></pre>
+<h3>Kotlin</h3>
+<pre><code class="language-kotlin">sealed class Color {
+    object Red: Color()
+    object Green: Color()
+    object Blue: Color()
+    class Rgb(val r: Int,val  g: Int,val  b: Int): Color()
+}
+</code></pre>
+<h3>Scala</h3>
+<pre><code class="language-scala">sealed trait Color
+
+final case object Red extends Color
+final case object Green extends Color
+final case object Blue extends Color
+final case class Rgb(r: Int, g: Int, b: Int) extends Color
+</code></pre>
+<h3>Dotty</h3>
+<pre><code class="language-scala">enum Color {
+  case Red
+  case Green
+  case Blue
+  case Rgb(r: Int, g: Int, b: Int)
+}
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">type Color = Red | Green | Blue | Rgb;
+const enum ColorKind {
+  Red = &quot;Red&quot;,
+  Green = &quot;Green&quot;,
+  Blue = &quot;Blue&quot;,
+  Rgb = &quot;Rgb&quot;
+}
+
+interface Red {
+    kind: ColorKind.Red;
+}
+
+interface Green {
+    kind: ColorKind.Green;
+}
+
+interface Blue {
+    kind: ColorKind.Blue;
+}
+
+interface Rgb {
+    kind: ColorKind.Rgb;
+    r: number;
+    g: number;
+    b: number;
+}
+</code></pre>
+<h3>Ruby</h3>
+<pre><code class="language-ruby">module Color
+  Red = 1
+  Green = 2
+  Blue = 3
+  Rgb = Struct.new(:r, :g, :b)
+end
+</code></pre>
+<h2>感想</h2>
+<h3>符号</h3>
+<ol>
+<li>Koka, Rust, Haxe, Elm: 非常好</li>
+<li>Dotty, Swift, PureScript, Haskell, OCaml: 比较好</li>
+<li>Ruby: 一般</li>
+<li>Kotlin: 很难写</li>
+<li>Scala: 写起来很难</li>
+</ol>
+<h2>模式匹配</h2>
+<h3>Koka</h3>
+<pre><code class="language-haskell">
+match(color) {
+  Red   -&gt; &quot;#FF0000&quot;
+  Green -&gt; &quot;#00FF00&quot;
+  Blue  -&gt; &quot;#0000FF&quot;
+  Rgb(r,g,b) -&gt; &quot;#&quot; + showHex(r,2) + showHex(g,2) + showHex(b,2)
+}
+</code></pre>
+<h3>Rust</h3>
+<pre><code class="language-rust">match color {
+    Color::Red   =&gt; &quot;#FF0000&quot;.to_string(),
+    Color::Green =&gt; &quot;#00FF00&quot;.to_string(),
+    Color::Blue  =&gt; &quot;#0000FF&quot;.to_string(),
+    Color::Rgb{r, g, b} =&gt; format!(&quot;#{:02X}{:02X}{:02X}&quot;, r, g, b),
+}
+</code></pre>
+<h3>Haxe</h3>
+<pre><code class="language-haxe">switch( color ) {
+  case Red:   &quot;#FF0000&quot;;
+  case Green: &quot;#00FF00&quot;;
+  case Blue:  &quot;#0000FF&quot;;
+  case Rgb(r, g, b): &quot;#&quot;+ StringTools.hex(r,2) + StringTools.hex(g,2) + StringTools.hex(b,2);
+}
+</code></pre>
+<h3>Swift</h3>
+<pre><code class="language-swift">switch color {
+  case .Red:
+    return &quot;#FF0000&quot;
+  case .Green:
+    return &quot;#00FF00&quot;
+  case .Blue:
+    return &quot;#0000FF&quot;
+  case let .Rgb(r, g, b):
+    return String(format:&quot;#%02X%02X%02X&quot;, r, g, b)
+}
+</code></pre>
+<h3>Elm</h3>
+<pre><code class="language-elm">case color of
+    Red   -&gt; &quot;#FF0000&quot;
+    Green -&gt; &quot;#00FF00&quot;
+    Blue  -&gt; &quot;#0000FF&quot;
+    Rgb {r, g, b} -&gt; String.concat [&quot;#&quot;, (toHex r), (toHex g), (toHex b)]
+</code></pre>
+<h3>PureScript</h3>
+<pre><code class="language-haskell">case color of
+  Red   -&gt; &quot;#FF0000&quot;
+  Green -&gt; &quot;#00FF00&quot;
+  Blue  -&gt; &quot;#0000FF&quot;
+  Rgb { r, g, b } -&gt; &quot;#&quot; &lt;&gt; toHex r &lt;&gt;  toHex g &lt;&gt;  toHex b 
+</code></pre>
+<h3>Haskell</h3>
+<pre><code class="language-haskell">case color of
+    Red   -&gt; &quot;#FF0000&quot;
+    Green -&gt; &quot;#00FF00&quot;
+    Blue  -&gt; &quot;#0000FF&quot;
+    Rgb r g b -&gt; printf &quot;#%02X%02X%02X&quot; r g b
+</code></pre>
+<h3>OCaml</h3>
+<pre><code class="language-ocaml">match color with
+      Red   -&gt; &quot;#FF0000&quot;
+    | Green -&gt; &quot;#00FF00&quot;
+    | Blue  -&gt; &quot;#0000FF&quot;
+    | Rgb {r; g; b} -&gt; Printf.sprintf &quot;#%02X%02X%02X&quot; r g b;;
+</code></pre>
+<h3>ReasonML</h3>
+<pre><code class="language-ocaml">switch (color) {
+  | Red =&gt; &quot;#FF000&quot;
+  | Green =&gt; &quot;#00FF00&quot;
+  | Blue =&gt; &quot;#0000FF&quot;
+  | Rgb{r, g, b} =&gt; Format.sprintf(&quot;#%02X%02X%02X&quot;, r, g, b)
+  };
+</code></pre>
+<h3>Kotlin</h3>
+<pre><code class="language-kotlin">when ( color ) {
+  Color.Red   -&gt; &quot;#FF0000&quot;
+  Color.Green -&gt; &quot;#00FF00&quot;
+  Color.Blue  -&gt; &quot;#0000FF&quot;
+  is Color.Rgb -&gt; &quot;#%02X%02X%02X&quot;.format(color.r, color.g, color.b)
+}
+</code></pre>
+<h3>Scala</h3>
+<pre><code class="language-scala">color match {
+  case Red   =&gt;&quot;#FF0000&quot;
+  case Green =&gt;&quot;#00FF00&quot;
+  case Blue  =&gt;&quot;#0000FF&quot;
+  case Rgb(r, g, b) =&gt; &quot;#%02X%02X%02X&quot;.format(r, g, b)
+}
+</code></pre>
+<h3>Dotty</h3>
+<pre><code class="language-scala">color match {
+  case Color.Red   =&gt; &quot;#FF0000&quot;
+  case Color.Green =&gt; &quot;#00FF00&quot;
+  case Color.Blue  =&gt; &quot;#0000FF&quot;
+  case Color.Rgb(r, g, b) =&gt; &quot;#%02X%02X%02X&quot;.format(r, g, b)
+}
+</code></pre>
+<h3>TypeScript</h3>
+<pre><code class="language-typescript">switch (color.kind) {
+    case ColorKind.Red: return &quot;#FF0000&quot;;
+    case ColorKind.Green: return &quot;#00FF00&quot;;
+    case ColorKind.Blue: return &quot;#0000FF&quot;;
+    case ColorKind.Rgb: return &quot;#&quot; + [color.r, color.g, color.b].map((v) =&gt; v.toString(16)).join('').toUpperCase();
+    default:
+        const _exhaustiveCheck: never = color;
+        return _exhaustiveCheck;
+}
+</code></pre>
+<h3>Ruby</h3>
+<pre><code class="language-ruby">case color
+when Color::Red; &quot;#FF000&quot;
+when Color::Green; &quot;#00FF00&quot;
+when Color::Blue; &quot;#0000FF&quot;
+when Color::Rgb; &quot;#%02X%02X%02X&quot; % [color.r, color.g, color.b]
+end
+</code></pre>
+<h2>感想</h2>
+<h3>符号</h3>
+<ol>
+<li>Koka, Rust, Elm, PureScript, Haskell: 非常好</li>
+<li>OCaml, Kotlin: 好</li>
+<li>Haxe, Scala, Dotty, Ruby: 一般</li>
+<li>TypeScript, Swift: 很难写</li>
+</ol>
+<h2>编译器的默认行为</h2>
+<ol>
+<li>Rust，Haxe，Swift，Kotlin，Elm，PureScript：如果未覆盖该模式，则会出现编译错误</li>
+<li>Scala，Dotty，OCaml，ReasonML：即使不包含模式，编译也会在没有警告的情况下传递</li>
+<li>Koka，Haskell：即使不包含模式，编译也会在没有警告的情况下通过</li>
+<li>Ruby：外部</li>
+</ol>
+<p>来自： https://qiita.com/xmeta/items/91dfb24fa87c3a9f5993</p>

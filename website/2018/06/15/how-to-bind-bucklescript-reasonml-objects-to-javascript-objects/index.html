@@ -1,0 +1,130 @@
+<h1>如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象。</h1>
+<blockquote>
+<p>注1：当我在本文中说 BuckleScript 时，我指的是 OCaml。
+注2：JavaScript对象与 BuckleScript / ReasonML中的 Object 不同。</p>
+</blockquote>
+<p>尽管它们本身支持面向对象的风格，但 BuckleScript / ReasonML 是函数式语言，这意味着它们不鼓励使用类的概念。相反，要在 BuckleScript / ReasonML 中创建 JavaScript 对象，可以使用 Js.Dict 或 Record 类型。当需要可变数量的 keys 时，应使用前者。后者用于键被固定并且其类型被预先确定的情况。</p>
+<h2>使用 Js.Dict 创建一个对象</h2>
+<pre><code class="language-ocaml">let myDict = Js.Dict.empty ()
+let _ Js.Dict.set myDict &quot;myKey1&quot; 100
+let _ Js.Dict.set myDict &quot;myKey2&quot; 200
+
+let myDict2 = Js.Dict.empty ()
+let _ Js.Dict.set myDict2 &quot;myKey1&quot; 100
+let _ Js.Dict.set myDict2 &quot;myKey2&quot; &quot;hello&quot; (* 错误，值必须是相同的类型 *)
+</code></pre>
+<p>*用 BuckleScript Js.Dict 创建 JavaScript 对象*</p>
+<pre><code class="language-ocaml">let myDict = Js.Dict.empty();
+Js.Dict.set(myDict, &quot;myKey1&quot;, 100);
+Js.Dict.set(myDict, &quot;myKey2&quot;, 200);
+
+let myDict2 = Js.Dict.empty();
+Js.Dict.set(myDict2, &quot;myKey1&quot;, 100);
+Js.Dict.set(myDict2, &quot;myKey2&quot;, &quot;hello&quot;); /* 错误，值必须是相同的类型 */
+
+</code></pre>
+<p>* 上面代码片段的 ReasonML 对应部分。*</p>
+<p>Js.Dict 是一个 JavaScript 字典，我们可以将任何值作为值，但是，强类型系统要求其值必须是相同的类型。我们创建的字典将直接转换为普通的 JavaScript 对象。</p>
+<p>如果我们想要在 Js.Dict 中存储多个类型的值，我们可以使用嵌套的 Js.Dict 结构或变体类型来实现。这看起来可能很麻烦，但这是对型号安全的一种折衷。</p>
+<p>现在，让我们看看如何在 Js.Dict 中存储变量类型的值。</p>
+<pre><code class="language-ocaml">type myVariantType = 
+    | Nothing
+    | Something of int
+    | LotOfThing of int array
+    [@@bs.deriving accessors]
+
+let myDict = Js.Dict.empty ()
+let _ = Js.Dict.set myDict &quot;foo&quot; Nothing
+let _ = Js.Dict.set myDict &quot;bar&quot; ((Something (1)))
+let _ = Js.Dict.set myDict &quot;foobar&quot; ((LotOfThing ([|1;2;3|])))
+</code></pre>
+<p>* 代码片段显示了如何在Dictionary对象中存储变体类型 *</p>
+<pre><code class="language-ocaml">[@bs.deriving accessors]
+type myVariantType = 
+    | Nothing
+    | Something(int)
+    | LotOfThing(array(int));
+
+let myDict = Js.Dict.empty();
+Js.Dict.set(myDict, &quot;foo&quot;, Nothing);
+Js.Dict.set(myDict, &quot;bar&quot;, Something(1));
+Js.Dict.set(myDict, &quot;foobar&quot;, LotOfThing([|1,2,3|]));
+</code></pre>
+<p>* 上述代码片段的ReasonML对象 *</p>
+<p>Variant 类型的值不会按原样存储在 JavaScript 对象中，但它们会被转换并转换为普通的 JavaScript 对象，如下所示：</p>
+<pre><code class="language-ocaml">var myDict = { };
+
+myDict[&quot;foo&quot;] = /* Nothing */0;
+myDict[&quot;bar&quot;] = /* Something */Block.__(0, [1]);
+myDict[&quot;foobar&quot;] = /* LotOfThing */Block.__(1, [/* array */[
+      1,
+      2,
+      3
+    ]]);
+</code></pre>
+<p><code>Nothing</code> 变成 <code>0</code>, <code>Something</code> 变成 <code>Block.__(0, [1]);</code> 和 <code>LotOfThing</code> 变成 <code>Blocks.__(1, [[1,2,3]]);</code></p>
+<p>这意味着我们在运行时不会有 Variant 类型的值。通过不查看注释来运行代码，我们无法取回 Variant 的名称。这就是注解 <code>accessors</code> 在那里的原因。它将根据每种变体类型绑定变量，以便我们可以自然地在 JavaScript 中使用 Variant，例如 <code>myDict[&quot;foo&quot;] = nothing;</code> 代替 <code>myDict[&quot;foo&quot;] = /* Nothing */0;</code></p>
+<h2>使用 Record 创建一个对象</h2>
+<p>虽然我们使用 Js.Dict 来存储相同类型的键和值（称为字段），并且它可能具有可变数量的字段。<a href="https://bucklescript.github.io/docs/en/object.html#object-as-record">一个对象可以被定义为一个记录</a></p>
+<ul>
+<li>具有已知数量的字段</li>
+<li>可能包含或可能不包含异构类型的值</li>
+</ul>
+<p>与 Variant 略有不同，可以使用 type 关键字使用<a href="https://realworldocaml.org/v1/en/html/records.html">以下语法</a>定义 Record：</p>
+<pre><code class="language-ocaml">type &lt;记录名称&gt; =
+  { &lt;字段&gt; : &lt;类型&gt; ;
+    &lt;字段&gt; : &lt;类型&gt; ;
+    ...
+  }
+</code></pre>
+<p>例如，</p>
+<pre><code class="language-ocaml">type person = {
+    name: string;
+    age: int;
+    job: string;
+}
+
+let p = {name = &quot;John&quot;; age = 20; job = &quot;jobless&quot;}
+let _ = Js.log p
+</code></pre>
+<p>上面的代码产生了一个 [&quot;John&quot;, 20, &quot;jobless&quot;] 的数组，这并不是我们想要的。要保留键，我们必须使用对象语法将我们的 Record 包装在 JavaScript 对象类型 Js.t 中。</p>
+<pre><code class="language-ocaml">type person = &lt;name: string; age: int; job: string&gt; Js.t
+</code></pre>
+<p>这里的角括号是在 BuckleScript 中创建对象。请注意，这与典型的基于类的面向对象语言不同，它不需要 Class 的概念。对于来自其他世界的人来说，这可能看起来很奇怪，但是<a href="https://realworldocaml.org/v1/en/html/objects.html#ocaml-objects">在 OCaml 类型中并不等于类</a>。一个对象可以在没有类的情况下创建。</p>
+<p>为了创建，我们可以使用 person 类型的对象</p>
+<pre><code class="language-ocaml">let p = object
+    method name = &quot;John&quot;
+    method age = 20
+    method job = &quot;jobless&quot;
+end;;
+</code></pre>
+<p>不，这不是一个错字。我们想要暴露给外部世界的属性被定义为方法。这是未包装在 Js.t 中的对象的原始 OCaml 语法。但是，BuckleScript 将所有 JavaScript 对象解除为 Js.t. 它通过提供 bs.obj s注释帮助我们避免语法负担。所以，上面的代码将成为</p>
+<pre><code class="language-ocaml">let p = [%bs.obj {name=&quot;John&quot;;age=20;job=&quot;jobless&quot;}]
+</code></pre>
+<p>ReasonML 将语法糖带到另一个层面。要定义一个 JavaScript 绑定：</p>
+<pre><code class="language-ocaml">type person = {
+    .
+    &quot;name&quot;: string,
+    &quot;age&quot;: int,
+    &quot;job&quot;: string,
+};
+</code></pre>
+<p>并在 ReasonML 中创建 JavaScript 对象：</p>
+<pre><code class="language-ocaml">let p = {&quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 20, &quot;job&quot;: &quot;jobless&quot;};
+</code></pre>
+<h2>类</h2>
+<p>在 ES6 中引入的 JavaScript 类仅仅是使用基于原型的继承和函数闭包的功能。</p>
+<blockquote>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes">类语法不会为 JavaScript 引入新的面向对象的继承模型。</a></p>
+</blockquote>
+<p>他们<a href="https://bucklescript.github.io/docs/en/class.html#bind-to-js-classes">不鼓励使用</a>：</p>
+<blockquote>
+<p>通常，更喜欢使用先前的对象部分的特征来绑定到 JS 对象。</p>
+</blockquote>
+<p>最后，本文旨在讨论如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象，但到目前为止，我们所做的仅仅是定义使 OCaml 类型系统识别我们要使用的对象的结构。</p>
+<p><code>external</code> 是我们想要将值绑定到 JavaScript 值时使用的关键字。例如</p>
+<pre><code class="language-ocaml">external johb : person = &quot;john&quot; [@@bs.val]
+</code></pre>
+<p>这意味着我们将 john 绑定到 JavaScript 变量名称 john 并且它有一个 person 类型。</p>
+<h2>总结</h2>
+<p>使用 JavaScript 对象时，可能会试图将其与（Js.t）框一起使用。但是，为了获得 OCaml 类型系统的全部好处，我们宁愿将 Js.t 转换为本地结构。</p>

@@ -1,0 +1,260 @@
+<h1>OCaml 简介第 1 部分</h1>
+<p>译自 : https://qiita.com/zenwerk/items/3bdf7eef6b7511e11b2c</p>
+<h2>函数式语言</h2>
+<p>函数式语言 =&gt; 执行程序 = 执行表达式</p>
+<p>执行表达式 =&gt; 计算表达式（eval）以获得值</p>
+<p><img src="/images/68747470733a2f2f71696974612d696d6167652d73746f72652e73332e616d617a6f6e6177732e636f6d2f302f343432382f65373633373633322d393262342d623736342d623063652d6465366161653933396161342e706e67.png" alt="函数式语言原理图" /></p>
+<h2>基本类型</h2>
+<h3>整型（int）</h3>
+<h4>字首</h4>
+<ul>
+<li>二进制 0b</li>
+<li>八进制 Oo</li>
+<li>十六进制 0x</li>
+</ul>
+<pre><code class="language-ocaml"># 351;;
+- : int = 351
+# 12345;;
+- : int = 12345
+# 0o523;;
+- : int = 339
+# 0xffff;;
+- : int = 65535
+</code></pre>
+<h3>浮点数（float）</h3>
+<pre><code class="language-ocaml"># 3.141;;
+- : float = 3.1415
+# 1.04e10;;
+- : float = 10400000000.
+# 25e-15;;
+- : float = 2.5e-14
+</code></pre>
+<h3>字符（char）</h3>
+<ul>
+<li>将其用单引号括起来，用单字节字母数字字符（ascii 字符）</li>
+</ul>
+<pre><code class="language-ocaml"># 'a';;
+- : char = 'a'
+# '\101';;
+- : char = 'e'
+# '\n';;
+- : char = '\n'
+</code></pre>
+<h3>字符串（string）</h3>
+<ul>
+<li>用双引号括起来。</li>
+<li>一个字符串，一个字符可以用[下标]获取。</li>
+</ul>
+<pre><code class="language-ocaml"># &quot;string&quot;;;
+- : string = &quot;string&quot;
+# &quot;string&quot;.[0];;
+- : char = 's'
+</code></pre>
+<h3>类型转换</h3>
+<ul>
+<li>从 X 类型转换为 Y 类型的函数的命名规则为 Y_of_X。</li>
+</ul>
+<pre><code class="language-ocaml"># float_of_int 5;;
+- : float = 5.
+# int_of_float 5.;;
+- : int = 5
+- # string_of_int 123;;
+- : string = &quot;123&quot;
+# int_of_string &quot;123&quot;;;
+- : int = 123
+</code></pre>
+<h3>元组</h3>
+<ul>
+<li>(类型名 * 类型名...)</li>
+</ul>
+<pre><code class="language-ocaml"># (1, 2);;
+- : int * int = (1, 2)
+# ('a', 1, &quot;str&quot;, 4.3);;
+- : char * int * string * float = ('a', 1, &quot;str&quot;, 4.3)
+# ((1, 2), ('a', &quot;str&quot;));;
+- : (int * int) * (char * string) = ((1, 2), ('a', &quot;str&quot;))
+</code></pre>
+<h3>定义变量</h3>
+<h4>let 定义（let defenition）</h4>
+<ul>
+<li>let 变量名称 = 表达式</li>
+</ul>
+<pre><code class="language-ocaml"># let hoge = 1;;
+val hoge : int = 1
+</code></pre>
+<h4>可以同时定义</h4>
+<ul>
+<li>let 变量名称 = 表达式 1 and 表达式 2</li>
+</ul>
+<pre><code class="language-ocaml"># let a = 1 and b = 2;;
+val a : int = 1
+val b : int = 2
+</code></pre>
+<h3>定义函数</h3>
+<h4>let 函数名 参数 = 表达式</h4>
+<pre><code class="language-ocaml"># let twice s = s ^ s;;
+val twice : string -&gt; string = &lt;fun&gt;
+</code></pre>
+<p>包含参数（）是可选的。</p>
+<h4>let 表达式（let expression）</h4>
+<ul>
+<li>与 let 定义不同。</li>
+<li>用于在函数中定义临时变量（局部变量）的表达式。</li>
+<li>let 变量名 = 表达式 1 in 表达式 2</li>
+</ul>
+<pre><code class="language-ocaml"># let four_times s =
+  let twice = s ^ s in
+  twice ^ twice;;
+val four_times : string -&gt; string = &lt;fun&gt;
+</code></pre>
+<h3>递归定义</h3>
+<h4>用 let rec 定义。</h4>
+<ul>
+<li>使用 rec 可以引用函数定义中定义的函数名称。</li>
+</ul>
+<p>阶乘的例子:</p>
+<pre><code class="language-ocaml"># let rec fact x =
+    if x &lt;= 1 then 1 else x * fact (x - 1);;
+val fact : int -&gt; int = &lt;fun&gt;
+# fact 5;;
+- : int = 120
+</code></pre>
+<h3>相互递归</h3>
+<ul>
+<li>
+<p>两个或多个函数相互调用的样式的递归定义。</p>
+</li>
+<li>
+<p>let rec 函数名称 1 参数 1 = 表达式 1 and 函数名称 2 参数 2 = 表达式 2 and ...</p>
+</li>
+</ul>
+<pre><code class="language-ocaml"># let rec even n =
+    match n with
+    | 0 -&gt; true
+    | x -&gt; odd (x-1)
+  and odd n =
+    match n with
+    | 0 -&gt; false
+    | x -&gt; even (x-1);;
+val even : int -&gt; bool = &lt;fun&gt;
+val odd : int -&gt; bool = &lt;fun&gt;
+
+# even 10;;
+- : bool = true
+# even 3;;
+- : bool = false
+# odd 3;;
+- : bool = true
+# odd 10;;
+- : bool = false
+</code></pre>
+<h3>匿名函数</h3>
+<h4>fun 参数名 = 表达式</h4>
+<ul>
+<li>let f 参数 = 表达式 是 let f = fun 参数 = 表达式 的语法糖</li>
+<li>因为 fun 是尽可能地认识到它是一个函数定义，所以最好在必要时用（）分割它。</li>
+</ul>
+<h3>高阶函数</h3>
+<p>定义一个函数作为参数</p>
+<pre><code class="language-ocaml"># let twice f x = f (f x);;
+val twice : ('a -&gt; 'a) -&gt; 'a -&gt; 'a = &lt;fun&gt;
+# twice (fun x -&gt; x * x) 3;;
+- : int = 81
+
+# let fourth x =
+    let square y = y * y in
+    twice square x;;
+val fourth : int -&gt; int = &lt;fun&gt;
+# fourth 3;;
+- : int = 81
+</code></pre>
+<h3>柯里化函数</h3>
+<pre><code class="language-ocaml"># let concat_curry s1 = fun s2 -&gt; s1 ^ s2 ^ s1;;
+val concat_curry : string -&gt; string -&gt; string = &lt;fun&gt;
+# concat_curry &quot;a&quot;;;  (* 部分適用 *)
+- : string -&gt; string = &lt;fun&gt;
+# (concat_curry &quot;a&quot;) &quot;b&quot;;;
+- : string = &quot;aba&quot;
+</code></pre>
+<h3>柯里化语法糖</h3>
+<p>一下这个定义</p>
+<pre><code class="language-ocaml">let concat_curry s1 s2 = s1 ^ s2 ^ s1;;
+</code></pre>
+<p>与以下相同</p>
+<pre><code class="language-ocaml">let concat_curry s1 = fun s2 -&gt; s1 ^ s2 ^ s1;;
+</code></pre>
+<p>也就是说，当参数排序的时候，以下代码</p>
+<pre><code class="language-ocaml"># let fuga x y z = x + y + z;;
+val fuga : int -&gt; int -&gt; int -&gt; int = &lt;fun&gt;
+</code></pre>
+<p>实际上可以展开为以下代码</p>
+<pre><code class="language-ocaml"># let hoge x = fun y -&gt; fun z -&gt; x + y + z;;
+val hoge : int -&gt; int -&gt; int -&gt; int = &lt;fun&gt;
+</code></pre>
+<p>函数是左结合，所以可以扩展如下：</p>
+<pre><code class="language-ocaml">f x y z =&gt; (((f x) y) z)
+</code></pre>
+<p>函数类型构造函数是右结合的</p>
+<pre><code class="language-ocaml">int - &gt; int - &gt; int - &gt; int = &lt;fun&gt;
+解释为
+int - &gt;（int - &gt;（int - &gt; int））= &lt;fun&gt;
+</code></pre>
+<h3>运算符定义</h3>
+<h4>中缀运算符被定义为柯里化函数。</h4>
+<pre><code class="language-ocaml"># (+);;
+- : int -&gt; int -&gt; int = &lt;fun&gt;
+# (+) 1 2;;
+- : int = 3
+</code></pre>
+<h4>自己定义操作符时</h4>
+<h4>前缀运算符</h4>
+<ul>
+<li>1、定义为一个参数函数</li>
+</ul>
+<h4>中缀运算符</h4>
+<ul>
+<li>2、定义为参数（currying）函数</li>
+<li>请注意，可以用来定义运算符的字符类型是有限的。</li>
+</ul>
+<h3>类型推断</h3>
+<ul>
+<li>比较运算符（=等）可以使用多种类型，如整数类型和实数类型=&gt;多态（多态）。</li>
+<li>具有多态性的类型系统被称为多态类型系统。</li>
+</ul>
+<h4>类型方案·参数多态性</h4>
+<ul>
+<li>一种表示一种类型的外观模式的变量。</li>
+<li>它表示为'a 或'b。</li>
+</ul>
+<pre><code class="language-ocaml"># let twice f x = f (f x);;
+val twice : ('a -&gt; 'a) -&gt; 'a -&gt; 'a = &lt;fun&gt;
+# let first (x, y) = x;;
+val first : 'a * 'b -&gt; 'a = &lt;fun&gt;
+</code></pre>
+<h4>类型变量的泛化</h4>
+<ul>
+<li>将类型变量（如'_a）（类型方案，如'a'）泛化的条件之一如下。</li>
+<li>如果定义右侧的表达式是一个值，则可以概括类型变量</li>
+<li>作为值处理的事物=&gt;不需要计算的表达式</li>
+<li>作为一个例子</li>
+<li>函数声明</li>
+<li>常量</li>
+<li>需要计算的表达式不被视为值，因为它们是有价值的。</li>
+</ul>
+<pre><code class="language-ocaml">（*定义身份函数*）
+# let id x = x ;;
+val id：'a - &gt;'a = &lt;fun&gt;
+
+（*'_a不是一个类型方案
+    因为id是一个值，一些实际的参数是必需的，计算是必要的。
+*）
+# let id'= id id ;;
+val id'：'_a - &gt;'_a = &lt;fun&gt;
+
+（*
+    这种类型的方案
+    通过添加参数x，id'变成了函数定义。
+*）
+# let id'x = id id x ;;
+val id'：'a - &gt;'a = &lt;fun&gt;
+</code></pre>

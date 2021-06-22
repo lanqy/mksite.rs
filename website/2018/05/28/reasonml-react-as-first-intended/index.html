@@ -1,0 +1,169 @@
+<h1>ReasonML - React 为首要目标</h1>
+<p>译自：https://www.imaginarycloud.com/blog/reasonml-react-as-first-intended/</p>
+<p>ReasonML 是 <a href="https://www.facebook.com/">Facebook</a> 用来开发 React 应用程序并将其作为 JavaScript 的未来版本推广的新技术（<a href="https://reasonml.github.io/docs/en/what-and-why.html">他们说</a>ES2030）。在这篇文章中，我将简要介绍一下这项技术。</p>
+<h2>简而言之，ReasonML是：</h2>
+<ul>
+<li>一种编写 React 应用程序的新方法;</li>
+<li>OCaml语义的JavaScript友好语法;</li>
+<li>静态类型 - 带有类型推断;</li>
+<li>函数式，但不是纯粹的;</li>
+<li>主要编译为JavaScript;</li>
+<li>由 Facebook 和 Bloomberg。</li>
+</ul>
+<h2>以前的 React 与现在的 React 的不同</h2>
+<p>React 的编程风格比面向对象编程更接近函数式。因此，发现<a href="https://reasonml.github.io/docs/en/what-and-why.html">第一个 React 原型没有在 JavaScript 中实现，而是在 Standard ML中实现</a>，这并不奇怪。</p>
+<p>但是，随着原型开始成熟，作者决定将其移植到 JavaScript 并从那里继续，因为没有成熟的 JavaScript 转换器，也因为当时世界还没有准备好接受这种非主流的编程语言和风格。</p>
+<p>因此，React作为与JavaScript编程语言相关的技术而广受欢迎。</p>
+<p>尽管在 <a href="https://www.imaginarycloud.com/blog/a-javascript-ecosystem-overview/">JavaScript 生态系统</a>中取得了这些成功，但有些人开始觉得幕后还有其他相关项目正在发生 - 例如 Redux，<a href="https://www.imaginarycloud.com/blog/elm-javascript-reinvented-1-overview/">Elm</a> 和 Purescript，开始受到欢迎，从而推动社区的思维更接近 React 最初函数式和静态类型的根源。</p>
+<p>这使得 Facebook 相信将 React 本身拉近根本是可行和方便的。如果他们没有那么多已经完成的工作，他们不会这么做。</p>
+<h4>Bucklescript</h4>
+<p>一些公司正在开发这样的任务关键用户界面, 使用动态或渐进式语言可能会造成无法承受的损失。</p>
+<p><a href="https://www.bloomberg.com/">Bloomberg</a> 就是这样的公司之一，对 Bloomberg 而言，<a href="https://www.techatbloomberg.com/blog/release-1-7-story-behind-bucklescript/">张宏波正在尝试 JavaScript 运行时</a>，他意识到将 OCaml 编译器移植到 JavaScript 并在浏览器上运行并不困难。</p>
+<pre><code class="language-ocaml">
+(* Bucklescript / O'Caml 中的阶乘实现 *)
+
+let rec factorial n = 
+    if n &lt;= 0 then
+        1
+    else
+        n * fact(n - 1)
+
+</code></pre>
+<p>现实情况是，<em><strong>OCaml编译器已经非常模块化</strong></em>，并且用JavaScript生成的后端替换它的本地代码生成的后端并不是很难。有了这样的后端，甚至可以将OCaml编译器编译为JavaScript，从而***<a href="https://bucklescript.github.io/bucklescript-playground/#Quick_Sort">自行托管Bucklescript编译器</a>***并在浏览器中运行它。</p>
+<p>Bucklescript 诞生并且更好，它由 Bloomberg 以开源软件的形式发布。</p>
+<pre><code class="language-ocaml">(* Bucklescript / O'Caml 中的 FizzBu​​zz 实现 *)
+
+let fizzbuzz i = 
+    match i mod 3, i mod 5 with
+    | 0, 0 -&gt; &quot;FizzBuzz&quot;
+    | 0, _ -&gt; &quot;Fizz&quot;
+    | _, 0 -&gt; &quot;Buzz&quot;
+    | _ -&gt; string_of_int i
+
+let _ = for i = 1 to 100 do
+    print_endline(fizzbuzz i)
+done
+
+</code></pre>
+<p>需要注意的是，原始的 OCaml 编译器已经由 <a href="https://en.wikipedia.org/wiki/French_Institute_for_Research_in_Computer_Science_and_Automation">Institut National de Recherche en Informatique et Automatique（INRIA）</a>进行了数十年的开发和优化，并且它是用于如此严重的类型检查语言的最快编译器之一。</p>
+<h2>ReasonML</h2>
+<p>所以，<em><strong>如果 Facebook 打算让静态类型的 React 生态系统被打入，Bucklescript 肯定是一个很好的候选</strong></em>，因为他们似乎相信 JavaScript 以其流行的花括号语法对 React 的成功负有主要责任。</p>
+<pre><code class="language-ocaml">
+// ReasonML 中的阶乘实现
+
+let rec factorial = (x) =&gt; 
+    if(x &lt;= 0) {
+        1;
+    } else {
+        x * factorial(x - 1);
+    };
+
+</code></pre>
+<p>然而，他们并不足够简单地将 Bucklescript 与其 OCaml 语法相结合。他们相当保守 OCaml 的语义; Bucklescript 后端和尽可能多的 JavaScript 语法。</p>
+<p><em><strong>为了保持 JavaScript 语法，他们创建了一个额外的解析器</strong></em>，处理一种叫做 ReasonML 的新语言，它简直就是 OCaml，带有类似 JavaScript 的花括号语法。</p>
+<pre><code class="language-ocaml">
+// ReasonML 中的 FizzBuzz 实现
+
+let fizzbuzz = (i) =&gt;
+    switch ([i mod 3, i mod 5]) {
+        | [0, 0] =&gt; &quot;FizzBuzz&quot;
+        | [0, _] =&gt; &quot;Fizz&quot;
+        | [_, 0] =&gt; &quot;Buzz&quot;
+        | _ =&gt; string_of_int(i)
+    };
+
+    for(i in 1 to 100) {
+        print_endline(fizzbuzz(i));
+    };
+
+</code></pre>
+<p><em><strong>其结果与 JavaScript 非常相似</strong></em>，以至于某些 JavaScript 代码可以被编译器直接处理，就好像它是 ReasonML 一样，立即享受静态类型编译器带来的好处，而无需更改任何代码。</p>
+<pre><code class="language-ocaml">
+// 有效的 ReasonML 和 Javascript 代码
+
+let add = (a, b) =&gt; a + b;
+add(4, 6);
+
+</code></pre>
+<h2>ReasonReact</h2>
+<p>除了语言和编译器本身的工作之外，Facebook 还致力于开发围绕其 React 框架的 ReasonML 包装以及一些附加功能。</p>
+<p>它被称为 <a href="https://reasonml.github.io/reason-react/">Reason React</a> 并且已经开发，因此可以很<a href="https://reasonml.github.io/reason-react/docs/en/reason-using-js.html">容易地将 JavaScript React 组件</a>与 Reason 组件在同一个 ReactJS 或 Reason 应用程序中混合使用。</p>
+<p>应该注意的是，[Reason React] 不仅仅是 React 的包装，还提供了外部函数库，如 <a href="https://redux.js.org/introduction">Redux</a> 和 <a href="https://facebook.github.io/immutable-js/">Immutable</a>。</p>
+<h2>Redux 有什么用？</h2>
+<p>*** Redux 是一名在 React 项目中非常流行的状态管理器***。 简而言之，它允许将应用程序域逻辑组织为一组组合的 reducer 函数，这些函数旨在表示应用程序的状态应该如何转换为外部事件（如用户交互）。</p>
+<p><em><strong>使用 ReasonML 时，我们不再需要 Redux。</strong></em> ReasonReact 无状态组件已经提供了 reducer 中构建的概念，旨在解决 Redux 用于解决的问题。</p>
+<pre><code class="language-ocaml">/*  
+    * ReasonReact 中的简单递增计数器  
+    * 尝试：http://bit.ly/counter-button-sample  
+*/
+
+type state = {count: int};
+
+type action = 
+    | Click;
+
+let component = ReasonReact.reducerComponent(&quot;Counter&quot;);
+
+module Counter = {
+    let make = _children =&gt; {
+        ...component,
+
+        initialState: () =&gt; {count: 0},
+
+        reducer: (action, state) =&gt; 
+            switch (action) {
+                | Click =&gt; ReasonReact.Update({count: state.count + 1})
+            },
+        
+        render: self =&gt; {
+            let message = 
+                &quot;Clicked&quot;
+                ++ string_of_int(self.state.count)
+                ++ &quot; times(s)&quot;;
+                &lt;div&gt;
+                    &lt;button onClick=(_event =&gt; self.send(Click))&gt;
+                    (ReasonReact.string(message))
+                    &lt;/button&gt;
+                &lt;/div&gt;;
+        },
+    };
+};
+
+
+</code></pre>
+<h2>如何不可变？</h2>
+<p>以前由 Immutable 提供的功能是在语言级别实现的。 ReasonML（和 OCaml ）操作默认是不可变的，因此避免了使用外部库的认知和性能开销。</p>
+<h2>如何将 Reason 与 elm 进行比较？</h2>
+<p>前一段时间，我写了一系列关于 <a href="https://www.imaginarycloud.com/blog/elm-javascript-reinvented-1-overview/">elm 语言 的文章</a>，他们彼此没有什么不同。</p>
+<p>分析它们之间的深度差异超出了本文的预期范围，但总而言之，<em><strong>它们源于对函数纯度的不同立场以及两个项目的不同成熟度水平</strong></em>。</p>
+<p>下面你可以找到他们的特征如何匹配的表格摘要：</p>
+<p>共同的特征:</p>
+<ul>
+<li>函数式编程;</li>
+<li>编译成 JavaScript ;</li>
+<li>安全;</li>
+<li>短反馈回路;</li>
+<li>易于测试和反应堆;</li>
+<li>全覆盖，推断的静态类型。</li>
+</ul>
+<p>差异：</p>
+<p>特性 | Reason | Elm
+------------ | ------------- | -------------
+函数纯度 | 不纯粹 | 纯粹
+语法 | 基于Javascript的 - 可选 ML 为基础 | 更简洁;基于 ML 的语法
+JS 交互 | 更简单 - 不太安全 | 安全 - 更多的模板
+测试难易度 | 由于最终缺乏函数纯度，因此可能有些代码用 Reason 可能更难以测试 | 由于其函数纯度，始终易于测试
+React 兼容 | 是 | 否
+处理JS的副作用 | 通过编写命令式代码很容易处理副作用 | 有时很难优雅地处理
+多态性 | 参数化和 OO 式 Ad-hoc | 参数型和行型
+编译速度 | 非常快 | 较慢
+目标平台 | Javscript、OCaml Bytecode; Native code(AMD; INTEl ; ARM &amp; PowerPC) | Javascript</p>
+<p>行业 / 学术支持 | Facebook;Blooberg; INRIA | Evan Czaplicki(作者)；Prezi NoRedInk</p>
+<h2>编译为本地代码</h2>
+<p>正如您在上面的表格中注意到的那样，它提到了 ReasonML 可以编译为本地代码。这可以通过将 ReasonML语法层与剩余的原始 OCaml 编译器（包括原始本机代码后端）一起使用来完成。</p>
+<p><em><strong>这里有很多潜力</strong></em>，最终允许在后端和前端之间共享原因代码，并将后端编译为本机代码。</p>
+<h2>现实世界的 Reason</h2>
+<p>ReasonML 的旗舰应用程序是 Facebook Messenger，最初是一个使用 ReactJS 的应用程序，已逐步迁移到 ReasonML。此外，Reason 文档页面中列出了大量<a href="https://reasonml.github.io/en/users-of-reason.html">其他项目和公司</a>。</p>
+<h2>结论</h2>
+<p><em><strong>ReasonML似乎是对 Elm 框架所探讨的相同概念的一种新尝试</strong></em>。即便如此，从营销和技术观点来看，这个项目及其支持者所采取的选择似乎更有希望。</p>
+<p>虽然 Elm 看起来是一个建立在创新理念基础上的美丽原型，但 <em><strong>ReasonML 似乎是企业级的实现</strong></em>，恰到好处地站在巨人的肩膀上，并吸引主流的品味。</p>

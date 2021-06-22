@@ -1,0 +1,81 @@
+<h1>BuckleScript 绑定技巧</h1>
+<p>译自： https://jwheatley.co/bucklescript-binding-tips/</p>
+<blockquote>
+<p>这是一组适用于当前或未来项目的简单绑定提示，减少了对试验 / 错误的需求，并减少了深度文档搜索解决与下面示例相关的问题。</p>
+</blockquote>
+<h2>保持 React.js 中的 js</h2>
+<pre><code class="language-ocaml">module Container = {
+  [@bs.module &quot;./styled/Container&quot;]
+  external js : ReasonReact.reactClass = &quot;default&quot;;
+  let make = children =&gt;
+    ReasonReact.wrapJsForReason(
+      ~reactClass=js,
+      ~props=Js.Obj.empty(),
+      children
+      );
+};
+</code></pre>
+<p>我将外部 js 命名为如果我需要将 React 组件的规范传递到 Reason 中使用的基于 JS 的库，我可以使用 <code>&lt;ComponentName&gt;.js</code> 来访问它。</p>
+<p>例如：</p>
+<pre><code class="language-ocaml">open Bindings.ReactRouter;
+let component = ReasonReact.statelessComponent(&quot;App&quot;);
+
+let make = (_children) =&gt; {
+  ...component,
+  render: (_self) =&gt;
+    &lt;Router&gt;
+      &lt;div&gt;
+        &lt;Header /&gt;
+      &lt;/div&gt;
+      &lt;Switch&gt;
+        &lt;Route exact=true path=&quot;/&quot; component=Home.js /&gt;
+        &lt;Route component=NoMatch.js /&gt;
+      &lt;/Switch&gt;
+      &lt;Footer /&gt;
+      &lt;/div&gt;
+    &lt;/Router&gt;
+}
+</code></pre>
+<h2>属性</h2>
+<p>这是 Khoa Nguyen 关于使用 BuckleScript 对象“特殊创建函数”绑定 ReasonReact 属性的“<a href="https://khoanguyen.me/writing-reason-react-bindings-the-right-way/">正确方法</a>”。</p>
+<h2>使 ReasonReact 组件对 JS 更友好</h2>
+<pre><code class="language-ocaml">let component = ReasonReact.statelessComponent(&quot;App&quot;);
+
+let make = _children =&gt; {
+  ...component,
+  render: self =&gt; &lt;div /&gt;
+};
+
+let default = ReasonReact.wrapReasonForJs(~component, _jsProps =&gt; make([||]));
+</code></pre>
+<p>使用为 JS 封装的组件创建“默认”变量，您可以通过它的 BuckleScript 输出文件名简单地导入它，而不用担心命名的导出。例如: 用 <code>import App from './App.bs'</code>; 代替 <code>import { AppWrapped } from './App.bs'</code>;</p>
+<h2>非代码导入</h2>
+<pre><code class="language-ocaml">type assetT;
+[@bs.module] external twitterSvg : assetT = &quot;../assets/svg/twitter.svg&quot;;
+</code></pre>
+<p>我个人不会假设在 JS 端会输出什么类型（int，string 等）。我只是给它一个泛型类型，让 Webpack 或 Metro Bundler 处理它，但它通常会。</p>
+<h2>全局</h2>
+<pre><code class="language-ocaml">[@bs.val] external setInterval : (unit =&gt; unit, int) =&gt; int = &quot;setInterval&quot;;
+[@bs.val] external clearInterval : int =&gt; unit = &quot;clearInterval&quot;;
+</code></pre>
+<p>要与 BuckleScript 绑定的全局 JS 变量是 <code>bs.val</code>，而不是 <code>bs.module</code>。</p>
+<h2>函数重载</h2>
+<pre><code class="language-ocaml">module Date = {
+  type t;
+  [@bs.new] external fromValue: float =&gt; t = &quot;Date&quot;;
+  [@bs.new] external fromString: string =&gt; t = &quot;Date&quot;;
+};
+
+let date1 = Date.fromValue(107849354.);
+let date2 = Date.fromString(&quot;1995-12-17T03:24:00&quot;);
+</code></pre>
+<p>如果你绑定的 JS 函数采用不同类型的参数，你可以使用不同类型的不同名称进行多次绑定，以表示你将传递给它的东西。</p>
+<pre><code class="language-ocaml">module Date = {
+  type t;
+  [@bs.new] external make : ([@bs.unwrap] [ | `Value(float) | `String(string)]) =&gt; t = &quot;Date&quot;;
+};
+
+let date1 = Date.make(`Value(107849354.));
+let date2 = Date.make(`String(&quot;1995-12-17T03:24:00&quot;));
+</code></pre>
+<p>你也可以使用 <code>bs.unwrap</code> 来“重载”你的函数类型。</p>

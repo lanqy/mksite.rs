@@ -1,0 +1,323 @@
+<h1>React1 生态系统入门第一部分（共三个部分）</h1>
+<p>译自: http://patternhatch.com/2016/07/06/a-primer-on-the-react-ecosystem-part-1-of-3/</p>
+<ul>
+<li><!-- raw HTML omitted -->更新<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->介绍<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->这一期中<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->先决条件<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->代码<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->项目描述<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->创建项目<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->Webpack<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->Babel<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->热模块更换<!-- raw HTML omitted --></li>
+<li><!-- raw HTML omitted -->第一个React组件<!-- raw HTML omitted --></li>
+</ul>
+<!-- raw HTML omitted -->
+<ul>
+<li>配置开发React应用的环境</li>
+<li>创建React组件并让他们对数据变化做出反应</li>
+<li>通过Redux管理应用的状态</li>
+</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<ul>
+<li>检索艺术家的专辑</li>
+<li>检索给定专辑的曲目</li>
+<li>播放曲目开头30秒</li>
+</ul>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code class="language-js">mkdir respotify
+cd respotify
+npm init -y
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Respotify&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Respotify&lt;/h1&gt;
+    &lt;div id=&quot;user-content-container&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;/bundle.js&quot;&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-html"> &lt;div id=&quot;user-content-container&quot;&gt;&lt;/div&gt;
+  &lt;script src=&quot;/bundle.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-js">console.log(&quot;Hello,world!&quot;);
+</code></pre>
+<!-- raw HTML omitted -->
+<p>这个时候，我们的目录结构应该像这样：</p>
+<pre><code class="language-js">respotify
+ -src
+  --index.html
+  --index.js
+ --package.json
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-js">npm install webpack --save-dev
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code class="language-js">const webpack = require('webpack'); // line 1
+const path = require('path');// line 2
+ // line 3
+const PATHS = { // line 4
+  app: './src/index.js', // line 5
+  dist: path.join(__dirname, 'dist') // line 6
+}; // line 7
+ // line 8
+module.exports = { // line 9
+  entry: { // line 10
+    javascript: PATHS.app // line 11
+  }, // line 12
+  output: { // line 13
+    path: PATHS.dist, // line 14
+    publicPath: '/', // line 15
+    filename: 'bundle.js' // line 16
+  }, // line 17
+  devServer: { // line 18
+    contentBase: PATHS.dist // line 19
+  } // line 20
+}; // line 21
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code class="language-js">node node_modules/webpack/bin/webpack.js
+</code></pre>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<pre><code class="language-js">Respotify
+-dist
+ --bundle.js
+-node_modules
+-src
+ --index.html
+ --index.js
+--package.json
+--webpack.config.js
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-js">npm install file-loader --save-dev
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-js">const webpack = require('webpack');
+const path = require('path');
+ 
+const PATHS = {
+  app: './src/index.js',
+  html: './src/index.html', // 高亮行
+  dist: path.join(__dirname, 'dist')
+};
+ 
+module.exports = {
+  entry: {
+    javascript: PATHS.app,
+    html: PATHS.html // 高亮行
+  },
+  output: {
+    path: PATHS.dist,
+    publicPath: '/',
+    filename: 'bundle.js'
+  },
+  devServer: {
+    contentBase: PATHS.dist
+  },
+  // 高亮部分
+  module: { 
+    loaders: [
+      {
+        test: /\.html$/,
+        loader: &quot;file?name=[name].[ext]&quot;
+      }
+    ]
+  }
+  // 高亮部分
+};
+</code></pre>
+<!-- raw HTML omitted -->
+<pre><code class="language-js">node node_modules/webpack/bin/webpack.js
+</code></pre>
+<p>你应该看到index.html已经复制到dist目录项了，dist目录现在应像这样：</p>
+<pre><code class="language-js">dist
+--bundle.js
+--index.html
+</code></pre>
+<p>我们在开发的过程中，我们需要重新编译bundle.js，每次修改代码都要重新在命令行编译Webpack必然很乏味，如果我们要创建一个在我们修改代码的时候可以自动编译和刷新浏览器实时看到效果，我们该怎样做呢？</p>
+<p>这个时候就应该使用<!-- raw HTML omitted -->Webpack dev server<!-- raw HTML omitted -->了,让我们来安装它：</p>
+<pre><code class="language-js">npm install webpack-dev-server --save-dev
+</code></pre>
+<p>一旦安装完成，我们运行一下命令：</p>
+<pre><code class="language-js">node node_modules/webpack-dev-server/bin/webpack-dev-server.js
+</code></pre>
+<p>这将启动开发服务器在:<!-- raw HTML omitted -->http://localhost:8080/webpack-dev-server/<!-- raw HTML omitted --></p>
+<p>如果您访问这个链接，你应该会看到我们的应用：</p>
+<!-- raw HTML omitted -->
+<p>试着去修改index.html文件中的h1标签并且保存它，webpack开发服务器将自动检测并重新加载。每次重新加载你也会看到控制台输出日志。因此现在我们有一个webpack服务器，服务我们的静态资源和重新加载当有代码有修改的时候。</p>
+<p>让我们完善一下我们的package.json文件，创建一些脚本，以至于我们更方便处理一些事情。</p>
+<p>添加以下高亮行package.json的脚本对象中：</p>
+<pre><code class="language-js">&quot;scripts&quot;: {
+  &quot;start&quot;: &quot;node node_modules/webpack-dev-server/bin/webpack-dev-server.js&quot;, // 高亮
+  &quot;build&quot;: &quot;node node_modules/webpack/bin/webpack.js&quot;, // 高亮
+  &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+},
+</code></pre>
+<p>如果你没有停止webpack开发服务器，停掉它然后运行用一下命令运行Webpack开发服务：</p>
+<pre><code class="language-js">npm run start
+</code></pre>
+<p>使用一下命令构建:</p>
+<pre><code class="language-js">npm run build
+</code></pre>
+<p>这个时候，我们基本的构建已经完成，下一步，我们将扩大我们的构建过程，允许我们使用最新的ES6功能。</p>
+<!-- raw HTML omitted -->
+<p><!-- raw HTML omitted -->ES6支持<!-- raw HTML omitted -->各种不同的浏览器，因此这样使用所有的ES6功能，不需要考虑各个浏览器的兼容性呢？一个解决方案就是把ES6代码转成ES5，这正是我们接下来要做的。</p>
+<p>我们将使用<!-- raw HTML omitted -->Babel<!-- raw HTML omitted -->来做这个事情,我们需要Babel来做两件事：</p>
+<ul>
+<li>转ES6代码到ES5</li>
+<li>转<!-- raw HTML omitted -->JSX<!-- raw HTML omitted -->成JavaScript。JSX是React DSL，类似HTML。你将学习它，当你开始React开发的时候。</li>
+</ul>
+<p>开始安装这些Babel包：</p>
+<pre><code class="language-js">npm install babel-core babel-loader babel-preset-es2015 babel-preset-react --save-dev
+</code></pre>
+<p>让我们看看每个包都干嘛的：</p>
+<ul>
+<li><!-- raw HTML omitted -->babel-core<!-- raw HTML omitted --> Babel核心编译器。</li>
+<li><!-- raw HTML omitted -->babel-loader<!-- raw HTML omitted --> Webpack的Babel加载器。</li>
+<li><!-- raw HTML omitted -->preset-es2015<!-- raw HTML omitted --> 一套ES6转ES5的Babel插件。</li>
+<li><!-- raw HTML omitted -->babel-preset-react<!-- raw HTML omitted --> 一套JSX转成JS的Babel插件。</li>
+</ul>
+<p>在开始结合Babel之前，让我们来改改index.js，让它包含以下ES6代码，修改之后看起来像这样：</p>
+<pre><code class="language-js">const greeting = (name) =&gt; {
+  console.log(`Hello, ${name}!`);
+};
+greeting('world');
+</code></pre>
+<p>现在执行 npm run build命令，看看文件bundle.js底部，你应该可以看到之前定义的原始的ES6方法，没有任何变化，考虑到这一点，让我们结合Babel。</p>
+<p>第一，我们将添加babel-loader到我们的webpack.config.js文件中，回想一下，我们如何使用文件加载器将index.html文件复制到dist目录中，我们现在为Babel添加第二个加载对象，添加一下高亮行到你到module对象中：</p>
+<pre><code class="language-js">module: {
+  loaders: [
+    {
+      test: /\.html$/,
+      loader: &quot;file?name=[name].[ext]&quot;
+    },
+    //高亮部分
+    { 
+      test: /\.js$/,
+      exclude: /node_modules/,
+      loaders: [&quot;babel-loader&quot;]
+    }
+    //高亮部分
+  ]
+}
+
+</code></pre>
+<p>这里，我们要求Webpack应用babel-loader在所有以.js为后缀到并且不在node_modules文件夹中的文件。</p>
+<p>下一步，我们在项目根目录中创建一个.babelrc文件，内容如下：</p>
+<pre><code class="language-js">{
+&quot;presets&quot;:[&quot;react&quot;,&quot;es2015&quot;]
+}
+</code></pre>
+<p>这里要求Babel使用前面我们安装的<!-- raw HTML omitted --> presets<!-- raw HTML omitted -->。</p>
+<p>就这样。</p>
+<p>再一次执行 npm run build 和检查bundle.js，我们的greeting 方法现在应该转成了ES5。</p>
+<p>好，我们几乎已经完成了，下一步我们要做的就是重新加载React组件，当我们做改动的时候，不会丢失状态信息。</p>
+<!-- raw HTML omitted -->
+<p>让我们开始安装<!-- raw HTML omitted -->React<!-- raw HTML omitted -->和<!-- raw HTML omitted -->ReactDOM<!-- raw HTML omitted -->，以及<!-- raw HTML omitted -->React Hot Loader<!-- raw HTML omitted -->。注意我们安装React和ReactDOM作为正常的依赖，而React Hot Loader作为开发依赖。安装方式如下：</p>
+<pre><code class="language-js">npm install react react-dom --save
+</code></pre>
+<pre><code class="language-js">npm install react-hot-loader --save-dev
+</code></pre>
+<p>下一步，我们让webpack使用热更换，打开webpack.config.js修改babel-loader像这样：</p>
+<pre><code class="language-js">loaders:[&quot;react-hot&quot;,&quot;babel-loader&quot;]
+</code></pre>
+<p>重要的是，React-hot被添加为webpack过程从右到左的之前。</p>
+<p>下一步，打开package.json编辑 start npm脚本如下：</p>
+<pre><code class="language-js">&quot;start&quot;: &quot;node node_modules/webpack-dev-server/bin/webpack-dev-server.js --hot --inline&quot;,
+</code></pre>
+<p>在这一点上，我们进一步加强我们的开发配置重新加载React组件而状态不丢失，但是这个意味着什么呢？要回答这一问题，我们需要创建一个React组件来测试我们的配置。</p>
+<!-- raw HTML omitted -->
+<p>在src目录下创建一个greeting.js:</p>
+<pre><code class="language-js">import React from &quot;react&quot;; //第1行
+ 
+export default React.createClass({ //第3行
+  render: function() {//第4行
+    return ( //第5行
+      &lt;div className=&quot;greeting&quot;&gt;
+        Hello, {this.props.name}!
+      &lt;/div&gt;
+    ); //第9行
+  }
+});
+</code></pre>
+<p>我们刚刚创建我们的第一个React组件，让我们一行一行来看。</p>
+<p>［第一行］在顶部，我们导入React。</p>
+<p>［第三行］我们通过<!-- raw HTML omitted -->React.createClass方法<!-- raw HTML omitted -->创建一个React组件类，传入一个描述我们组件的规范对象。</p>
+<p>［第四行］每个React组件都必须有一个render方法，它返回组件的标记。</p>
+<p>［第五－九行］在render方法里，我们返回一个类HTML 包含一个class名称为gretting的div 包裹这一个字符串，字符串本身把Hello和一些引用值连接起来。</p>
+<p>我们将继续深入理解第五－九行，但是现在，让我们先把这个组件在屏幕上展示出来。</p>
+<p>打开index.js修改它如下:</p>
+<pre><code class="language-js">import React from &quot;react&quot;;
+import ReactDOM from &quot;react-dom&quot;;
+import Greeting from './greeting';
+ 
+ReactDOM.render(
+  &lt;Greeting name=&quot;World&quot;/&gt;,
+  document.getElementById('container')
+);
+</code></pre>
+<p>我们再一次从导入React开始，接着我们导入ReactDOM，用于渲染DOM的API接口，我们也导入我们的greeting component。</p>
+<p>当我们调用ReactDOM的render方法时，我们传入两个参数：</p>
+<ul>
+<li>1.我们需要渲染的组件。</li>
+<li>2.我们要把组件渲染到的位置。</li>
+</ul>
+<p>在我们的例子中，我们将渲染我们的greeting组件到一个id为container的div中，这个div在我们的index.html中。</p>
+<p>注意第一个参数是怎么样子的，我们传入greeting组件，它好像是一个HTML元素，它包含了一个键值对，其中键的名字为name，值为world。然后name就成为我们greeting组件的属性。</p>
+<p>大体上，我们可以这么描述index.js：</p>
+<p><!-- raw HTML omitted -->渲染greeting组件，把world赋给它的name属性，把这个组件渲染到id为container的div上。<!-- raw HTML omitted --></p>
+<p>现在，当我们渲染greeting组件时，我们将接收name属性和包含它的值的字符串，重启开发服务并验证这个组件渲染：</p>
+<!-- raw HTML omitted -->
+<p>测试它的重载，试着用h1标签包裹字符串，如下：</p>
+<pre><code class="language-js">&lt;h1&gt;Hello, {this.props.name}!&lt;/h1&gt;
+</code></pre>
+<p>保存它，你将看到组件局部更新，而不需要全部重新加载。</p>
+<p>现在，让我们退后一步，重新看greeting.js代码片段：</p>
+<pre><code class="language-js"> return (
+      &lt;div className=&quot;greeting&quot;&gt;
+        Hello, {this.props.name}!
+      &lt;/div&gt;
+    );
+</code></pre>
+<p>我们返回的标记实际上是JSX，一个React特定的DSL，就像HTML用方便描述树结构。我们的Babel配置会把JSX转换成等效的纯JavaScript。有两个重要的概念要记住：</p>
+<ul>
+<li>JSX不是JavaScript的扩展。</li>
+<li>JSX不是必须的，你可以使用纯JavaScript的调用方式代替。</li>
+</ul>
+<p>要展示第二点，我们使用<!-- raw HTML omitted --> Babel REPL<!-- raw HTML omitted -->,在REPL中，确保选中ES2015 和 React preset这两个选项，复制greeting.js的内容到左侧的编辑器中，你会看到转换输出到右侧，一个代码片段类似这样：</p>
+<pre><code class="language-js">&lt;div className=&quot;greeting&quot; /&gt;
+</code></pre>
+<p>将转换为：</p>
+<pre><code class="language-js">_react2.default.createElement(&quot;div&quot;, { className: &quot;greeting&quot; });
+</code></pre>
+<p>以上的纯JavaScript你可以直接使用，然而，我强烈推荐使用JSX，这个让你的React组件方便阅读和书写。事实上，它看起来像HTML也有助于减少学习曲线，当然，由于JSX是JavaScript，跟HTML有一些细微的差异，比如JSX的className和HTML的class，我们将深入理解更多JSX的功能，可以去看看Facebook的指南了解更多的东西。</p>
+<p>让我们把注意力放在div中的这行代码：</p>
+<pre><code class="language-js"> Hello, {this.props.name}!
+</code></pre>
+<p>在JSX中，用花括号括起来的是一个JavaScript表达式，因此，在这里，我们访问这个组件的props对象，反过来，在props上访问name属性。</p>
+<p>还记得在index.js中的这一行代码吗？</p>
+<pre><code class="language-js">&lt;Greeting name=&quot;World&quot;/&gt;
+</code></pre>
+<p>当你实例化一个组件，你可以传入大量的表示该组件状态的键值对。因此，当我们实例化我们的greeting组件，我们也应该指定一个名为name的状态。这个值的状态叫做“world”。</p>
+<p>在实际的greeting组件中，该状态通过组件的props对象和使用相同的name标签来传递。花括号里的值被计算，并且返回“Hello，world”渲染到浏览器中。</p>
+<p>记住主要的一点，就是props是不可变的。换句话说，一旦状态被传递到一个组件，接受组件就不能再改变它了。这样有助于你的组件更容易理解和调试。以及将状态管理分离到几个模块中。</p>
+<p>试着在index.js中修改name的值。你将看到Webpack检测变化和自动加载，greeting组件将接收到新的状态，并作出响应。</p>
+<p>如果你跟着一起做下来，并且一切都正常工作，那么恭喜你！你刚刚构建了一个基于打包、转换、热更新的React应用开发环境。此外，你还创建了一个React组件，记住，你可以添加更多的环境，比如压缩文件，选择性打包，启用和禁用各种开发工具。但是对于我们而言，这样已经够了。</p>
+<p>在下一部分中，我们将进一步创建更多的React组件来完善我们的Spotify客户端，我们还将添加静态分析来保持我们的代码整洁明了。</p>
+<p>预计下一部分会在这一期发布之后的两个星期内完成。在此之前，如果你有任何意见和建议，请在下面留言或者给我发<!-- raw HTML omitted -->邮件<!-- raw HTML omitted -->。</p>

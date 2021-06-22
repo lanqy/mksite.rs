@@ -1,0 +1,38 @@
+<h1>Linux 下重新启动 Nginx web 服务器</h1>
+<p>译自 https://www.cyberciti.biz/faq/nginx-linux-restart/</p>
+<p>如何使用命令行选项在 Linux 或 Unix 操作系统下重新启动 nginx Web 服务器？ 要重新启动 nginx Web 服务器，请以 root 用户身份使用以下任一命令。打开终端或使用 ssh 登录到远程服务器。</p>
+<h3>Debian / Ubuntu / RHEL / CentOS Linux</h3>
+<p>使用以下命令：</p>
+<pre><code class="language-nginx">/etc/init.d/nginx restart
+</code></pre>
+<p>或者</p>
+<pre><code class="language-nginx">/etc/init.d/nginx reload
+</code></pre>
+<p>或者</p>
+<pre><code class="language-nginx">servive nginx restart
+</code></pre>
+<p>或者</p>
+<pre><code class="language-nginx">service nginx reload
+</code></pre>
+<p>或者如果您使用基于 systemd 的 Linux 发行版：</p>
+<pre><code class="language-nginx">sudo systemctl restart nginx
+</code></pre>
+<p>或者</p>
+<pre><code class="language-nginx">sudo systemctl reload nginx
+</code></pre>
+<p>查看状态</p>
+<pre><code class="language-nginx">service nginx status
+</code></pre>
+<p>或者</p>
+<pre><code class="language-nginx">sudo systemctl status nginx
+</code></pre>
+<p>但是，推荐方法如下。这应该适用于任何 Linux 发行版或类 Unix 操作系统：</p>
+<pre><code class="language-nginx">nginx -s reload
+</code></pre>
+<p>或者</p>
+<pre><code class="language-nginx">/path/to/full/nginx -s reload
+</code></pre>
+<h4>如果 nginx 编译并从源代码安装</h4>
+<p>如果 nginx 二进制文件安装在 /usr/local/nginx/sbin/nginx 中，请输入：</p>
+<pre><code class="language-nginx">/usr/local/nginx/sbin/nginx -s reload
+</code></pre>

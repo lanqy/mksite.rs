@@ -1,0 +1,121 @@
+<h1>OCaml 操作符备忘单</h1>
+<p>译自：https://www.brendanlong.com/ocaml-operator-cheatsheet.html</p>
+<p>学习 OCaml 最困难的部分之一就是弄清楚中缀运算符的作用，因为它们只是一串符号而你无法通过谷歌搜索找到它们。这是我试图制作一个备忘单，无论何时你想知道一系列随机符号是什么意思。在此页面上搜索应该找到有关任何常见 OCaml 运算符的基本信息。请注意，某些库定义了自己的运算符，例如 Jane Street 的<a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/core/Core/Command/Spec/index.html#val-(++)">Command.Spec</a> 如何定义 ++，+&gt; 和 +&lt;。</p>
+<h2>关于中缀函数的一般信息</h2>
+<p>在 OCaml 中，如果函数名称以以下字符之一开头，则函数为中缀：</p>
+<pre><code class="language-ocaml">= @ ^ | &amp; + - * / $ %
+</code></pre>
+<p>其次是零个或多个这些字符：</p>
+<pre><code class="language-ocaml">! $ % &amp; * + - . / : ? @ ^ | ~
+</code></pre>
+<p>定义中缀函数时，需要在 “name” 周围加上 ()。 例如，在 <a href="https://github.com/diml/utop">utop</a> 中：</p>
+<pre><code class="language-ocaml"># let (=&lt;&gt;@^|&amp;~+-*/$%!?:.) a b = a + b ;;
+val ( =&lt;&gt;@^|&amp;~+-*/$%!?:. ) : int -&gt; int -&gt; int = &lt;fun&gt;
+
+# 1 =&lt;&gt;@^|&amp;~+-*/$%!?:. 2;;
+- : int = 3
+</code></pre>
+<p>此外，您可以通过再次将函数名称包装在括号中来查看 utop 中的中缀运算符的类型：</p>
+<pre><code class="language-ocaml"># (=&lt;&gt;@^|&amp;~+-*/$%!?:.);;
+
+val ( =&lt;&gt;@^|&amp;~+-*/$%!?:. ) : int -&gt; int -&gt; int = &lt;fun&gt;
+</code></pre>
+<p>这里的<a href="https://caml.inria.fr/pub/docs/manual-caml-light/node4.9.html">官方文档在这里</a>，虽然这个<a href="https://haifengl.wordpress.com/2014/07/02/ocaml-functions/">博客</a>有一个更容易理解的解释。</p>
+<h2>内置中缀运算符</h2>
+<p>内置运算符在 <a href="https://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives</a> 中定义：</p>
+<p>请参阅文档，了解涉及多种类型（=，&lt;&gt;，&lt;，&gt;等）的函数所涉及的魔力。</p>
+<p>操作符 | 描述
+------------ | -------------
+=	| 结构相等 <a href="https://stackoverflow.com/a/13596236/212555">1</a>
+&lt;&gt;	| 结果不等 <a href="https://stackoverflow.com/a/13596236/212555">1</a>
+&lt;	| 小于</p>
+<blockquote>
+<p>| 大于
+&lt;=	| 小于等于
+=	| 大于等于
+==	| 物理相等（同一对象）<a href="https://stackoverflow.com/a/13596236/212555">1</a>
+!=	| 物理不相等（不是同一个对象）<a href="https://stackoverflow.com/a/13596236/212555">1</a>
+&amp;&amp;	| 布尔和
+&amp;	| (已弃用) 布尔和
+||	| 布尔或
+|	| （已弃用）布尔或
+|&gt;	| 反函数应用（x |&gt; f 与 f x 相同）。也称管道运算符
+@@	| 功能应用（f @@ x与 f x 相同）
+~-	| 整数否定（与一元相同 - ）
+~+	| 被描述为 “一元加法” 但似乎没有做任何事情。</p>
+</blockquote>
+<ul>
+<li>| 整数加法</li>
+</ul>
+<ul>
+<li>| 整数减法</li>
+</ul>
+<ul>
+<li>| 整数乘法
+/	| 整数除法
+~-.	| 浮动否定（与一元相同 -.）
+~+.	| 被描述为 “一元加法” 但似乎没有做任何事情。
++.	| 浮点数加法
+-.	| 浮点数减法
+*.	| 浮点数乘法
+/.	| 浮点数除法
+**	| 浮点数幂
+^	| 字符串连接
+@	| 列表连接
+!	| 获取 ref 的值
+:=	| 设置（修改） ref 的值
+^^	| 格式化字符串连接</li>
+</ul>
+<h2>Jane Street</h2>
+<h3>Numbers</h3>
+<p>Jane Street 通常在模块中定义有意义的算术运算符，因此您可以执行以下操作：</p>
+<pre><code class="language-ocaml">Bigint.(of_int 1 + of_int 3 / of_int 5)
+</code></pre>
+<p>此接口的文档位于 <a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/base/Base/Int_intf/module-type-S_common/index.html">Int_intf.S_common</a> 下，尽管它们中的大多数也是针对浮点数定义的。</p>
+<p>操作符 | 描述
+------------ | -------------</p>
+<ul>
+<li>| 特定模块的添加（即 float.(+) 是浮动添加）</li>
+</ul>
+<ul>
+<li>| 特定模块的减法</li>
+</ul>
+<ul>
+<li>| 特定模块的乘法
+/	| 特定模块的除法
+//	| 整数除法返回浮点数
+%	| 中缀 <a href="https://en.wikipedia.org/wiki/Modulo_operation">mod</a> (结果总是整数)
+/%	| 中缀 <a href="https://en.wikipedia.org/wiki/Modulo_operation">mod</a> (如果输入为负，则结果为负)</li>
+</ul>
+<h3>Monads</h3>
+<p>Jane Street 的库（ Core，Async，Base 等）在 <a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/base/Base/List/Monad_infix/index.html">Monad_infix 模块</a>下一致地定义了中缀运算符。</p>
+<p>操作符 | 描述
+------------ | -------------</p>
+<blockquote>
+<blockquote>
+<p>=	| 中缀版本的 <a href="https://en.wikipedia.org/wiki/Monad_(functional_programming)#Overview">bind</a>。打开 Async 将此设置为 <a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/async_kernel/Async_kernel/Deferred/index.html#val-bind">Deferred.bind</a>
+|	| 中缀版本的 map. 打开 Async 将此设置为 <a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/async_kernel/Async_kernel/Deferred/index.html#val-map">Deferred.map</a>
+=? |	与 Or_error 混合的 bind。打开 Async 将此设置为 <a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/async_kernel/Async_kernel__/Deferred_or_error/index.html#val-bind">Deferred.Or_error.bind</a>
+&gt;&gt;|? |	与 Or_error 混合的 map。打开异步将此设置为 <a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/async_kernel/Async_kernel__/Deferred_or_error/index.html#val-map">Deferred.Or_error.map</a></p>
+</blockquote>
+</blockquote>
+<p>假设您熟悉 monad，可以记录 map 和 bind ，如果您需要更多信息，可能会发现此 <a href="https://stackoverflow.com/questions/29851449/what-is-the-use-of-monads-in-ocaml/29852213#29852213">StackOverflow 答案</a>很有用。</p>
+<blockquote>
+<blockquote>
+<p>= 和 &gt;&gt;| 最常出现在 Async 中，但它们也可以与 Option，List，Result 等一起使用。</p>
+</blockquote>
+</blockquote>
+<h3>Lwt</h3>
+<p>请参阅 <a href="http://ocsigen.org/lwt/3.1.0/api/Lwt">Lwt文档</a>。</p>
+<p>操作符 | 描述
+------------ | -------------</p>
+<blockquote>
+<blockquote>
+<p>=	| 中缀版本的 <a href="">bind</a>
+=&lt;&lt;	| 与反转的参数 bind
+&gt;|=	| 中缀版 map。与 Jane Street 代码中的 &gt;&gt;| 相同
+=|&lt;	| 与反转的参数 map</p>
+</blockquote>
+</blockquote>
+<p>Lwt 没有 Async 的&gt;&gt;=? 或 &gt;&gt;|? 因为 Lwt.t 可以包含错误而没有单独的 Or_error 模块。</p>
+<p>如果您需要有关 map 和 bind 的信息，请参阅上面的 Jane Street Monad 部分。</p>

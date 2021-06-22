@@ -1,0 +1,34 @@
+<h1>git 常用命令</h1>
+<h2>解决冲突：</h2>
+<pre><code class="language-text">git stash
+git pull origin develop
+git stash pop
+</code></pre>
+<h2>切换分支：</h2>
+<pre><code class="language-text">// 切换到 develop 分支
+git checkout -b develop 
+</code></pre>
+<h2>删除分支</h2>
+<pre><code class="language-text">git branch -d feature_x
+</code></pre>
+<h2>合并分支到你当前的分支</h2>
+<pre><code class="language-text">git merge &lt;branch&gt;
+</code></pre>
+<h2>查看两个分支的差异</h2>
+<pre><code class="language-text">git diff &lt;source_branch&gt; &lt;target_branch&gt;
+</code></pre>
+<h2>提交流程：</h2>
+<pre><code class="language-text">git add *
+
+git commit -m &quot;提交备注&quot;
+
+git push origin develop
+</code></pre>
+<h2>Git回滚代码到某个commit</h2>
+<pre><code class="language-text">$ git reset --hard HEAD^        // 回退到上个版本
+$ git reset --hard HEAD~3       // 回退到前3次提交之前，以此类推，回退到n次提交之前
+$ git reset --hard commit_id    // 退到/进到 指定commit的sha码
+</code></pre>
+<h2>删除某个标签</h2>
+<pre><code class="language-text">git push origin :refs/tags/v2.7.72 // 删除标签 v2.7.72 
+</code></pre>

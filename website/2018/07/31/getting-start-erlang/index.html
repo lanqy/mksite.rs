@@ -1,0 +1,500 @@
+<h1>Erlang 入门</h1>
+<p>译自：https://qiita.com/oskimura/items/87910c2e76cac075ee7f</p>
+<h2>Erlang 入门</h2>
+<p>Erlang 是一种支持语言和 VM 并行处理的函数式语言。此外，Erlang 受到 Prolog 及其并行逻辑语言的强烈影响，后者是其继承者，其效果可见于 VM 的语法和结构。</p>
+<h3>安装</h3>
+<h4>Windows</h4>
+<p>从 http://www.erlang.org/downloads 下载安装程序并安装它。</p>
+<h4>Mac</h4>
+<pre><code class="language-text">brew install erlang
+</code></pre>
+<p>你可以安装</p>
+<h4>Linux</h4>
+<p>如果是 Debian</p>
+<pre><code class="language-text">apt install erlang
+</code></pre>
+<h3>对话环境</h3>
+<h4>Windows</h4>
+<pre><code class="language-text">&quot;Start&quot; -&gt; &quot;All Programs&quot; -&gt; &quot;Erlang OTP&quot; -&gt; &quot;Erlang&quot;
+</code></pre>
+<h4>Mac &amp; Linux</h4>
+<p>通过从终端输入来建立对话环境。我们来试试吧。</p>
+<pre><code class="language-text">$ erl
+</code></pre>
+<pre><code class="language-erlang">$ erl
+Erlang R16B03 (erts-5.10.4) [source] [64-bit] [async-threads:10] [kernel-poll:false]
+
+Eshell V5.10.4  (abort with ^G)
+1&gt; 1+2+3.
+6
+2&gt;
+</code></pre>
+<p>6 它将显示。这是 1 + 2 + 3. 计算公式的结果。Erlang 使用 . 代替 ;。</p>
+<h3>编译</h3>
+<p>用 c 命令编译 。</p>
+<p>由于 Erlang 在名为 BEAM 的 VM 上运行，因此它被编译为在 VM 上运行的二进制文件。</p>
+<p>我们将此文件称为梁文件。</p>
+<p>创建的文件是</p>
+<pre><code class="language-shell">$ erl - pz. - noshell - noinput - s module - name function - s init stop
+</code></pre>
+<p>您可以在终端上键入并运行。</p>
+<p>但是，如果您想轻松运行它，它会更方便使用。</p>
+<h3>escript</h3>
+<p>在escript中，Erlang的程序可以像Perl脚本一样执行。</p>
+<pre><code class="language-erlang">#!/usr/bin/env escript
+%% -*- erlang -*-
+%%! -smp enable -sname factorial -mnesia debug verbose
+main([String]) -&gt;
+    try
+        N = list_to_integer(String),
+        F = fac(N),
+        io:format(&quot;factorial ~w = ~w\n&quot;, [N,F])
+    catch
+        _:_ -&gt;
+            usage()
+    end;
+main(_) -&gt;
+    usage().
+usage() -&gt;
+    io:format(&quot;usage: factorial integer\n&quot;),
+    halt(1).
+
+fac(0) -&gt; 1;
+fac(N) -&gt; N * fac(N - 1).
+</code></pre>
+<pre><code class="language-text">$ chmod u+x factorial
+</code></pre>
+<pre><code class="language-text">$ ./factorial 5
+factorial 5 = 120
+</code></pre>
+<pre><code class="language-text">$ ./factorial
+usage: factorial integer
+</code></pre>
+<pre><code class="language-text">$ ./factorial
+usage: factorial integer
+</code></pre>
+<pre><code class="language-text">$ ./factorial five
+usage: factorial integer
+</code></pre>
+<pre><code class="language-text">$ escript factorial 5
+</code></pre>
+<p>等等。</p>
+<p>有关详细信息，请参阅 <a href="http://erlang.org/doc/man/escript.html">escript manual</a>。</p>
+<h3>整数和实数</h3>
+<pre><code class="language-erlang">4&gt; 2#0101.
+5
+5&gt; 16#deadbeaf.
+3735928495
+</code></pre>
+<p>作为 # 你可以通过在前面放置一个数字来将 N-ary 符号提高到 36 位小数。</p>
+<p>Erlang 是一个多精度整数。</p>
+<p>IEEE 754格式的浮点数在 1.0e−323 到 1.0e+308 范围内</p>
+<h3>文字列</h3>
+<p>字符前面是 ASCII 字符 $ 。用双引号括起字符串。这是字母列表的糖涂层语法。列表将描述以下内容。</p>
+<p>它需要以后面描述的二进制表示。</p>
+<pre><code class="language-erlang">7&gt; $a.
+97
+8&gt; &quot;a&quot;.
+&quot;a&quot;
+9&gt; [$a,$b].
+&quot;ab&quot;
+</code></pre>
+<h3>变量</h3>
+<p>Erlang 变量名以大写字母开头。</p>
+<pre><code class="language-erlang">10&gt; X = 1.
+1
+11&gt; X.
+1
+</code></pre>
+<p>这是变量 X 在 1 中的值，通过代入 X 的值。</p>
+<p>我们将用后面描述的模式匹配来解释赋值。</p>
+<h3>操作符</h3>
+<h4>算术运算符</h4>
+<ul>
+<li><code>+</code>
+加</li>
+<li><code>*</code>
+乘</li>
+<li><code>-</code>
+减</li>
+<li><code>/</code>
+除</li>
+<li><code>div</code>
+整数除法</li>
+<li><code>rem</code>
+整数除法的余数</li>
+</ul>
+<p>它基本上与C语言和Java相同。div和rem分别是除数时的商和余数。</p>
+<h4>比较运算符</h4>
+<ul>
+<li><code>&gt;</code>
+大于</li>
+<li><code>&lt;</code>
+小于</li>
+<li><code>&gt;=</code>
+大于等于</li>
+<li><code>=&lt;</code>
+小于等于</li>
+<li><code>==</code>
+等于</li>
+<li><code>/=</code>
+不等于</li>
+<li><code>=:=</code>
+相等（带类型检查）</li>
+<li><code>=/=</code>
+不等于（带类型检查）</li>
+</ul>
+<h4>算术运算符</h4>
+<ul>
+<li><code>not</code>
+否定</li>
+<li><code>and</code>
+和</li>
+<li><code>andalso</code>
+和顺便（短路）</li>
+<li><code>or</code>
+或</li>
+<li><code>orelse</code>
+或者其他（短路）</li>
+<li><code>xor</code>
+独家理论和</li>
+</ul>
+<h3>条件分支</h3>
+<h4>if</h4>
+<pre><code class="language-erlang">if
+    &lt;conditional expression&gt; -&gt; &lt;form 1&gt;;
+    &lt;Conditional&gt; -&gt; &lt;Formula 2&gt;
+end
+</code></pre>
+<p>因为 Erlang 有一个模式匹配，所以 if 使用不多。</p>
+<p>对于条件分支，我们经常使用模式匹配，如稍后所述。</p>
+<h3>原子</h3>
+<p>原子代表一个标识符。小写字母如果包含以字母或符号开头的字母数字字符，则必须将它们括在反引号中。</p>
+<pre><code class="language-erlang">1&gt; abc.
+abc
+</code></pre>
+<p>当然，您可以将其分配给变量。</p>
+<pre><code class="language-erlang">2&gt; X = abc.
+abc
+3&gt; X.
+abc
+</code></pre>
+<p>Atom 经常用于 Erlang 编程，因为它便于后面描述的元组和消息的模式匹配。</p>
+<h3>输出</h3>
+<p>在 Erlang 中，输出到控制台 io:format 是使用通常调用的函数完成的。</p>
+<h4>io:format</h4>
+<p>Erlang 的格式化输出是通过 io:format完成。printf它对应于C语言，但格式化的输出格式类似于 Common Lisp 或者来自 C 的 Common Lisp。</p>
+<pre><code class="language-erlang">io:format(&quot;~p~n&quot;, [Term]).
+</code></pre>
+<ul>
+<li><code>~p</code> 漂亮打印</li>
+<li><code>~s</code> 文本列</li>
+<li><code>~n</code> 更改行数</li>
+<li><code>~d</code> 整数（十进制数）</li>
+</ul>
+<p>Erlang 使用列表，因为没有像 C 语言这样的可变参数。</p>
+<h3>模式匹配</h3>
+<h4>案例部分</h4>
+<pre><code class="language-erlang">case &lt;type&gt; of
+    &lt;表达式1&gt; -&gt; &lt;式1&gt;;
+    &lt;表达式2&gt; -&gt; &lt;式2&gt;
+end
+</code></pre>
+<p>case 子句是最简单的模式匹配形式。</p>
+<pre><code class="language-erlang">2&gt; A = 3.
+3
+3&gt; case A of 1 -&gt; a; 2 -&gt; b; 3 -&gt; c end.
+c
+</code></pre>
+<p>将返回 c ，它也可以像这样的C语言 switch 句子。</p>
+<p>如果我们从此表达式中排除最后一次模式匹配的处理，会发生什么？</p>
+<pre><code class="language-erlang">4&gt; case A of 1 -&gt; a; 2 -&gt; b end.
+** 异常错误：没有 case 子句匹配3
+5&gt;
+</code></pre>
+<p>像这样发生异常。这是一个例外，意味着没有条件匹配模式匹配。</p>
+<h4>通配符</h4>
+<p>然后如何更改它如下？它是通配符，并且在每种情况下都匹配。</p>
+<pre><code class="language-erlang">5&gt; case A of 1 -&gt; a; 2 -&gt; b; _ -&gt; c end.
+c
+</code></pre>
+<h4>单赋值</h4>
+<pre><code class="language-erlang">6&gt; X = 1.
+</code></pre>
+<p>实际上，替换实际上是一种模式匹配。</p>
+<p><code>=</code> 操作符在左侧表达式的右侧执行模式匹配。如果左边的变量尚未绑定，则计算右边表达式的值将被绑定。<code>=</code> 当然，如果表达式左侧的模式匹配失败，则会引发异常。</p>
+<p>在这个例子中，因为它只是一个像数字类型的简单类型，我认为它的用处很难理解。通过结合后面描述的列表，记录，元组等，您可以以非常多样化的方式使用它。</p>
+<p>模式匹配是 Erlang 的核心功能。</p>
+<h3>函数</h3>
+<pre><code class="language-erlang">&lt;function name&gt; (参数...) -&gt; 
+函数主体&lt;body&gt;.
+</code></pre>
+<p>例如，下面是一个函数，用于递增指定为参数的变量。函数定义是这样的。</p>
+<pre><code class="language-erlang">inc(X) -&gt; X + 1.
+</code></pre>
+<h3>函数和模式匹配</h3>
+<p>Erlang 还可以对函数参数执行模式匹配。</p>
+<pre><code class="language-erlang">signal(red) -&gt; stop;
+signal(blue) -&gt; do;
+signal(yellow) -&gt; carefull;
+signal(_) -&gt; error.
+</code></pre>
+<h4>递归</h4>
+<p>由于 Erlang 没有循环控制语法(如 C 语言中的语句)，因此循环处理是递归进行的。</p>
+<p>我将编写一个函数来查找阶乘。</p>
+<pre><code class="language-erlang">pow(1) -&gt; 1;
+pow(X) -&gt; X * pow(X - 1).
+</code></pre>
+<h4>尾递归</h4>
+<p>可以通过使用尾递归的形式来优化循环。</p>
+<pre><code class="language-erlang">pow_tail(1, Ret) -&gt; Ret;
+pow_tail(X, Ret) -&gt; pow_tail(X - 1, X * Ret).
+</code></pre>
+<p>简单地说，尾递归形式不计算递归函数的返回值，因此不需要每次都将函数的返回点堆栈在堆栈帧上，因此可以像循环一样在内部处理它</p>
+<p>有兴趣的人请自己研究。</p>
+<h3>记录</h3>
+<p>这是一个所谓的结构。</p>
+<pre><code class="language-erlang">-record(&lt;记录名&gt;, {&lt;元素名1&gt;, &lt;元素名2&gt;, ...}).
+</code></pre>
+<p>还提供了一种称为定义记录的函数的 rd 语法糖。</p>
+<pre><code class="language-erlang">rd(item, {id, name, price}).
+</code></pre>
+<pre><code class="language-erlang">7&gt; rd(player, {name, hp}).
+player
+</code></pre>
+<h4>初始化</h4>
+<pre><code class="language-erlang"># &lt;记录名&gt; {&lt;元素名1&gt; = 初始值1, &lt;元素名1&gt; = 初始值2, ...}
+</code></pre>
+<p>可以以这种形式进行记录初始化。</p>
+<pre><code class="language-erlang">9&gt; P = #player{name=&quot;hoge&quot;, hp=3}.
+</code></pre>
+<h4>引用</h4>
+<pre><code class="language-erlang">Variable#&lt;record name&gt;.&lt;Element&gt;
+</code></pre>
+<p>上面提到它。</p>
+<pre><code class="language-erlang">10&gt;P#player.name
+&quot;hoge&quot;
+</code></pre>
+<h4>更改</h4>
+<pre><code class="language-erlang">Variable#&lt;record name&gt;{&lt;element&gt; = &quot;hage&quot;}.
+</code></pre>
+<p>通过这样做，它返回更改记录元素的记录。</p>
+<pre><code class="language-erlang">11&gt; P#player{name=&quot;hage&quot;}.
+#player{name = &quot;hage&quot;, hp = 2}
+</code></pre>
+<h4>记录模式匹配</h4>
+<p>在左侧</p>
+<pre><code class="language-erlang"># &lt;Record name&gt; {&lt;element name 1&gt; = value, &lt;element name 2&gt; = variable name, ..}
+</code></pre>
+<p>你可以用搭配的形式进行模式匹配。</p>
+<pre><code class="language-erlang">2&gt; P = #item{id = 1, name=&quot;test&quot;, price=100}.
+3&gt; #item{id=1} = P.
+#item{id = 1, name = &quot;test&quot;, price = 100}.
+4&gt; #item{id = 1, name = Name} = P.
+#item{id = 1, name = &quot;test&quot;, price = 100}
+5&gt; Name.
+&quot;test&quot;
+</code></pre>
+<h3>列表</h3>
+<pre><code class="language-erlang">[&lt;element 1&gt;, &lt;element 2&gt;...]
+</code></pre>
+<pre><code class="language-erlang">1&gt; [1,2,3].
+[1,2,3]
+</code></pre>
+<p>这与 Lisp 等列表相同。内部缺点，最后一个是递归结构，单元格类似于Lisp nil。这将在后面描述。</p>
+<h4>列表处理</h4>
+<p>该列表可以通过模式匹配来处理。</p>
+<p>接下来，我们以一个计算列表长度的函数为例。</p>
+<pre><code class="language-erlang">len([]) -&gt;
+    0;
+len([Head|Tail]) -&gt;
+    1 + len(Tail).
+</code></pre>
+<p>[] 匹配空列表。</p>
+<p>[Head|Tail] Head 标识列表头, 例如, [1,2,3] Head 匹配 1， Tail 匹配 [2,3].</p>
+<p>处理列表的函数是组织成称为标准库的模块的列表。</p>
+<h3>元组</h3>
+<pre><code class="language-erlang">{&lt;Element 1&gt;, &lt;element 2&gt;...}
+</code></pre>
+<pre><code class="language-erlang">1&gt; {1,2,3}.
+{1,2,3}
+</code></pre>
+<p>在 Erlang 中经常使用元组而不是 Lisp 的 S 表达式。</p>
+<h3>二进制</h3>
+<pre><code class="language-erlang">&lt;&lt; &lt;Value 1&gt;: &lt;Size 1&gt; / &lt;Type&gt;, &lt;Value 2&gt;: &lt;Size 2&gt; / &lt;Type&gt; ... &gt;&gt;
+</code></pre>
+<p>您可以为每个尺寸指定一个大小的值。如果省略大小规范，则默认为 8 位。按此大小的大小划分的块称为段。</p>
+<p>可以指定类型，类型，代码，字节序，多种类型 - 可以连接。 可能的类型如下所列。</p>
+<p>类型</p>
+<ul>
+<li><code>integer</code> 整型</li>
+<li><code>float</code> 浮点数</li>
+<li><code>binary</code> 二进制类型</li>
+<li><code>bytes</code> 字节型</li>
+<li><code>bitstring</code> 位串</li>
+<li><code>bits</code> 位类型</li>
+<li><code>utf8</code> UTF-8 位字符串</li>
+<li><code>utf16</code> UTF16 的位串</li>
+<li><code>utf32</code> UTF32 位字符串</li>
+</ul>
+<p>符号</p>
+<ul>
+<li><code>signed</code> 有符号的</li>
+<li><code>unsigned</code> 无符号</li>
+</ul>
+<p>尾数法</p>
+<ul>
+<li><code>big</code> 大端字节序</li>
+<li><code>little</code> 小端字节</li>
+<li><code>native</code> CPU 原生端</li>
+<li><code>unit</code> 段的大小</li>
+</ul>
+<h4>二元运算符</h4>
+<ul>
+<li><code>bsl</code> 左移位</li>
+<li><code>bsr</code> 右移位</li>
+<li><code>band</code> 比特理论</li>
+<li><code>bor</code> 比特理论和</li>
+<li><code>bxor</code> 比特独家论证和</li>
+<li><code>bnot</code> 比特论证否定</li>
+</ul>
+<h4>二进制模式匹配</h4>
+<p>作为二进制模式匹配的示例，我将展示 RGB 颜色的示例。</p>
+<pre><code class="language-erlang">1&gt; Color = &lt;&lt;16#FF00FF:(8*3)&gt;&gt;.
+&lt;&lt;255,0,255&gt;&gt;
+</code></pre>
+<p><code>,</code> 您可以将每个 8 位 RGB 定义为相隔。</p>
+<pre><code class="language-erlang">2&gt; &lt;&lt;R,G,B&gt;&gt; = Color.
+&lt;&lt;255,0,255&gt;&gt;
+</code></pre>
+<p>这样，它可以通过模式匹配每 8 位进行分解。</p>
+<p>如果只想要第一个 R ，可以使用通配符通过以下方式编写来获得它。</p>
+<pre><code class="language-erlang">2&gt; &lt;&lt;R:8,_/binary&gt;&gt; = Color.
+&lt;&lt;255,0,255&gt;&gt;
+3&gt; R.
+255
+</code></pre>
+<p>顺便说一句，在 Erlang 中处理像日语这样的多字节字符</p>
+<pre><code class="language-erlang">io:format(&quot;~ts~n&quot;,[&lt;&lt;&quot;お&quot;/utf8&gt;&gt;]).
+</code></pre>
+<p>必须以二进制格式指定UTF-8，如下所示 有关详细信息，请参阅 <a href="http://erlang.org/doc/programming_examples/bit_syntax.html">Erlang 文档</a>。</p>
+<h3>理解符号</h3>
+<p>有两种类型的理解符号：列表理解符号和二进制理解符号。</p>
+<p>最初，理解符号是表示一组与集合论中的条件 P 一致的元素的符号。</p>
+<p>试图表达这一点的符号被介绍给米兰达。这种表示法后来被合并到 Haskell 和 Python 中。</p>
+<h4>列表理解符号</h4>
+<p>进入 <code>erl</code></p>
+<pre><code class="language-erlang">Erlang R16B03 (erts-5.10.4) [source] [64-bit] [async-threads:10] [kernel-poll:false]
+
+Eshell V5.10.4  (abort with ^G)
+1&gt; [ X * 2 || X &lt;- [1,2,3,4,5], X &lt; 4 ].
+[2,4,6]
+</code></pre>
+<p>这个 X &lt; - [1,2,3,4,5] 产生一个列表。</p>
+<p>接下来，X &lt; 4 它匹配条件 1 2 3 但被过滤，</p>
+<p>最后列表 X * 2 由 1 * 2 , 2 * 2 , 3 * 2 创建公式。</p>
+<p>概括如下：</p>
+<pre><code class="language-erlang">[Expression || pattern &lt;- list, condition]
+</code></pre>
+<p>二元理解是理解符号的二进制版本。</p>
+<pre><code class="language-erlang">&lt;&lt; expression || pattern &lt;= binary, condition &gt;&gt;
+</code></pre>
+<h3>并行</h3>
+<p>Erlang 中的并行处理是通过轻量级进程（进程）和消息实现的。</p>
+<p>Erlang 的过程类似于 OS 过程，但它由 Erlang 的 VM 执行，因此操作系统内的上下文切换没有完成。</p>
+<p>Erlang 的进程通过消息队列进行通信，而不共享内存区域。</p>
+<p>切换速度很快，因为 Erlang 的进程不涉及复杂的上下文切换，例如临时保存寄存器和切换到内核模式。</p>
+<h4>Actor 模型</h4>
+<p>我将简要介绍作为 Erlang 并行模型的 Actor 模型。</p>
+<p>一个叫做 actor 的对象，能够发送和接收消息 通过异步发送和接收消息并行执行计算处理的计算模型。在 Erlang 中，该过程相当于一个 actor ，我们正在相互发送和接收消息。 除了 Erlang 之外，这个 actor 模型的概念被采用为 Scala 的框架等</p>
+<h4>spawn</h4>
+<p>spawn 通过以下方式调用它来生成轻量级进程。</p>
+<pre><code class="language-erlang">Pid = spawn (&lt;module name&gt;, &lt;function name&gt;, &lt;list of arguments&gt;)
+</code></pre>
+<p>spawn 从参数函数创建一个进程，并为每个进程返回一个唯一的数值，称为进程 ID。</p>
+<p>进程 ID 和进程是链接的，此进程 ID 用于在进程之间发送和接收消息。</p>
+<h4>发送消息</h4>
+<p>要发送消息，请将消息以消息的形式发送到您想要发送的流程的进程 ID ，如下所示。</p>
+<pre><code class="language-erlang">Pid! Message
+</code></pre>
+<h4>接收消息</h4>
+<p>通过以下方式接收消息并通过模式匹配执行与消息相对应的处理是常见的。</p>
+<pre><code class="language-erlang">receive
+    &lt;Pattern 1&gt; -&gt;
+        &lt;Process 1&gt;;
+    &lt;Pattern 2&gt; -&gt;
+        &lt;Process 2&gt;;
+    
+    .........
+
+    &lt;Pattern N&gt; -&gt;
+        &lt;Process N&gt;
+    after n -&gt;
+        &lt; Timeout processing&gt;
+end
+</code></pre>
+<p>after 将进程在 n 毫秒后超时。</p>
+<h4>进程注册</h4>
+<p>spawn 对程序员来说每次都要保存变量生成的进程 ID 很麻烦。特别是当多个程序创建程序来发送消息时，管理变得非常麻烦。</p>
+<p>Erlang 有一种通过指定原子而不是进程 ID 来发送消息的方法。</p>
+<p>这是流程注册。 register 使用该函数注册进程。</p>
+<p>由于它超出了本文档的范围，因此不对其进行详细描述，但是进程注册功能通常用于分布式环境中。</p>
+<pre><code class="language-erlang">register(Atom,Pid)
+</code></pre>
+<p>通过 Atom ! the message 您可以在进程中发送已经以所述形式向 atom 注册的消息。</p>
+<h3>spawn_link</h3>
+<p>spawn_link 基本上是 spawn 相同，但是当发生异常时行为会有所不同。 该进程的父进程会在生成的子进程中创建一个异常。 spawn，父进程不会收到异常。</p>
+<h3>异常</h3>
+<p>我这样写异常。</p>
+<pre><code class="language-erlang">try &lt;evaluated expression&gt; of
+    &lt;pattern 1&gt; guard 1 -&gt; &lt;process 1&gt;;
+    &lt;pattern 2&gt; guard 2 -&gt; &lt;process 2&gt;;
+catch
+    &lt;exception type 1&gt;: &lt;pattern 1&gt; guard 1 -&gt; &lt;Exception processing 1&gt;;
+    &lt;exception type 2&gt;: &lt;pattern 2&gt; guard 2 -&gt; &lt;Exception processing 2&gt;
+after
+    &lt;Processing executed even if an exception occurs but not occurring&gt;
+end
+</code></pre>
+<p>try ... of 当在封闭的表达式中出现异常时，将在其后执行一个捕捉模式匹配，并在执行异常处理后执行处理。</p>
+<p>以下是引发异常的函数。</p>
+<h4>抛出异常</h4>
+<p>您可以按如下方式引发异常。</p>
+<pre><code class="language-erlang">throw(&lt;表达式&gt;)
+</code></pre>
+<h4>退出</h4>
+<p>它引发了如下异常并终止了该过程。</p>
+<pre><code class="language-erlang">exit(&lt;表达式&gt;)
+</code></pre>
+<h4>错误</h4>
+<p>我们将提出一个严重的例外，并终止如下过程。</p>
+<p>错误主要用于 Eralng 的 VM 生成的运行时错误。</p>
+<pre><code class="language-erlang">error(&lt;表达式&gt;)
+</code></pre>
+<h3>模块</h3>
+<p>当以描述源的文件为单位进行编译时，模块是最小的单元。除非属于某个模块，否则无法编译源代码。</p>
+<p>要创建模块，您需要在.erl 文件中描述模块属性，例如模块声明 。</p>
+<h4>模块属性</h4>
+<pre><code class="language-erlang">-module(&lt;module name&gt;).
+</code></pre>
+<h4>导出声明</h4>
+<p>声明导出声明函数。请连接 函数名称的参数个数如下 <code>/</code>。您可以按如下方式导出模块创建的所有功能。</p>
+<pre><code class="language-erlang">-export([&lt;函数名1&gt;/&lt;参数1&gt;&gt;, &lt;函数名2&gt;/&lt;参数2&gt;&gt;])
+
+-export_all
+</code></pre>
+<h4>编译选项声明</h4>
+<p>为编译器指定<a href="http://erlang.org/doc/man/compile.html">此选项</a>。</p>
+<h4>宏定义</h4>
+<p>宏可以定义如下。</p>
+<pre><code class="language-erlang">-define{&lt;macro&gt;，&lt;expression&gt;}
+</code></pre>
+<h4>记录声明</h4>
+<p>记录可以声明如下。</p>
+<pre><code class="language-erlang">-record(&lt;记录名&gt;, {&lt;元素名1&gt;, &lt;元素名2&gt;,...}).
+</code></pre>
+<h4>include</h4>
+<p>头文件可以包括如下。</p>
+<pre><code class="language-erlang">-include(&quot;&lt;header file&gt;&quot;).
+</code></pre>
+<p>头文件扩展名为.hrl。</p>
