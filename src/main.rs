@@ -34,8 +34,31 @@ struct Config {
     item_template_file: String,
 }
 
+struct Matter {
+    title: String,
+    created: String,
+    description: String,
+    author: String
+}
+
+struct Post {
+    title: String,
+    created: String,
+    link: String,
+    content: String,
+    matter: Matter
+}
+
+impl std::fmt::Display for Matter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "(value title: {}, value created: {}, value description: {}, value author: {})", self.title, self.created, self.description, self.author)
+    }
+}
+
 fn main() {
     let config_file = "./config.json";
+    let data_file = "./data.json";
+    let file_extension= ".md"
     let json_file_path = Path::new(config_file);
     let file = File::open(json_file_path).expect("file not found");
     let config: Config = serde_json::from_reader(file).expect("error while reading");
@@ -46,26 +69,57 @@ fn main() {
       let entry_path = entry.path();
       let file_name = entry_path.file_name().unwrap();
       let file_name_as_str = file_name.to_str().unwrap();
-      let file_name_as_string = String::from(file_name_as_str).replace(".md", "");
+      let file_name_as_string = String::from(file_name_as_str).replace(file_extension, "");
       let markdown_content = std::fs::read_to_string(&entry_path).unwrap();
       let front_matter_as_vec_str = parse_front_matter(&markdown_content);
       let mut options = ComrakOptions::default();
+      make_matter(front_matter_as_vec_str, &file_name_as_string);
       options.extension.front_matter_delimiter = Some("---".to_owned());
-        for x in front_matter_as_vec_str.iter() {
-            if x.contains("created") {
-                let vec: Vec<&str> = x.split(":").collect();
-                let path = Path::join(Path::new(&vec[1].trim()),Path::new(&file_name_as_string));
-                let html = markdown_to_html(&markdown_content, &options);
-                let dest = Path::join(Path::new(&base_dir), Path::new(&path));
-                fs::create_dir_all(&dest).unwrap();
-                let jfile_name = Path::new(&dest).join("index.html");
-                let mut file = File::create(&jfile_name).unwrap();
-                file.write_all(html.as_bytes()).unwrap();
-            }
-        }
+        // for x in front_matter_as_vec_str.iter() {
+        //     if x.contains("created") {
+        //         let vec: Vec<&str> = x.split(":").collect();
+        //         let path = Path::join(Path::new(&vec[1].trim()),Path::new(&file_name_as_string));
+        //         let html = markdown_to_html(&markdown_content, &options);
+        //         let dest = Path::join(Path::new(&base_dir), Path::new(&path));
+        //         fs::create_dir_all(&dest).unwrap();
+        //         let jfile_name = Path::new(&dest).join("index.html");
+        //         let mut file = File::create(&jfile_name).unwrap();
+        //         file.write_all(html.as_bytes()).unwrap();
+        //     }
+        // }
     }
 }
 
+pub fn make_matter(matter: Vec<&str>, file_name: &str) {
+    for x in matter.iter() {
+
+        let mut m = Matter {
+            title: "".to_string(),
+            created: "".to_string(),
+            description: "".to_string(),
+            author: "".to_string()
+        };
+
+        if x.contains("created") {
+            let vec: Vec<&str> = x.split(":").collect();
+            let path = Path::join(Path::new(&vec[1].trim()),Path::new(&file_name));
+            m.created = (&vec[1].trim()).to_string();
+        }
+        if x.contains("title") {
+            let vec: Vec<&str> = x.split(":").collect();
+            m.title = (&vec[1].trim()).to_string();
+        }
+        if x.contains("description") {
+            let vec: Vec<&str> = x.split(":").collect();
+            m.description = (&vec[1].trim()).to_string();
+        }
+        if x.contains("author") {
+            let vec: Vec<&str> = x.split(":").collect();
+            m.author = (&vec[1].trim()).to_string();
+        }
+        println!("-------------------{}", m);
+    }
+}
 
 pub fn parse_front_matter(contents: &str) -> Vec<&str> {
   let mut is_front_matter: bool = false;
