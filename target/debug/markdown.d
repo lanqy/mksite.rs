@@ -1,1 +1,1 @@
-D:\projects\mksite.rs\target\debug\markdown.exe: D:\projects\mksite.rs\src\main.rs
+F:\project\mksite.rs\target\debug\markdown.exe: F:\project\mksite.rs\src\main.rs
