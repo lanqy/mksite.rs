@@ -1,4 +1,40 @@
-<h1>理解 CSS 特异性的复杂性</h1>
+<!--
+ * @Author: Leland
+ * @Date: 2019-12-27 15:59:00
+ * @Description: Description
+ -->
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+        <title>理解 CSS 特异性的复杂性</title>
+        <link href="/css/style.css" rel="stylesheet" />
+        <meta name="description" content="理解 CSS 特异性的复杂性">
+    </head>
+
+    <body>
+        <div>
+        <div>
+        <header class="header">
+            <div class="container header-wrap">
+                <h1 class="site-name">
+                    <a href="/">
+                        首页
+                    </a>
+                </h1>
+                <ul class="nav">
+                    {{navs}}
+                </ul>
+            </div>
+        </header>
+        </div>
+        <div class="container main">
+        <div class="page-body">
+            <div class="markdown-body">
+                <h1>理解 CSS 特异性的复杂性</h1>
 <p>译自 http://cssdude.com/css/css-specificity/</p>
 <p>CSS 特性是层叠样式表中最难理解的概念之一，并且通常应用于 CSS 开发的典型规则不适用于CSS特性。 为了正确编码并缩短所花的时间，您需要仔细考虑并理解您的代码将如何被浏览器解释。 为了确保您的代码可读，您需要完全理解 CSS 特性的工作原理。</p>
 <h4>什么是 CSS 特异性？</h4>
@@ -16,3 +52,11 @@
 <p>您可以通过使用 ID 选择器来制定更具体的规则。当您发现自己遇到 CSS 特定性问题时，请避免使用 ！important。这种编码只会覆盖正常的声明并且不会为样式表提供结构。相反，尝试限制包含的选择器或使规则更具体。</p>
 <p>一旦您了解了如何将特异性应用于您的编码，您可以更轻松地确保更好的设计。了解如何通过浏览器解释某些属性，元素和选择器将允许您创建更多功能和正确的设计。</p>
 <!-- raw HTML omitted -->
+
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+
+</html>

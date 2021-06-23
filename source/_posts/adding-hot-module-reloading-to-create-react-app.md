@@ -1,8 +1,3 @@
-<!--
- * @Author: lanqy
- * @Date: 2021-06-20 09:49:36
- * @Description: file content
--->
 ---
 title: 给 create-react-app 创建的项目，加上热加载功能
 created: 2018/05/21

@@ -1,4 +1,40 @@
-<h1>如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象。</h1>
+<!--
+ * @Author: Leland
+ * @Date: 2019-12-27 15:59:00
+ * @Description: Description
+ -->
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+        <title>如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象</title>
+        <link href="/css/style.css" rel="stylesheet" />
+        <meta name="description" content="如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象">
+    </head>
+
+    <body>
+        <div>
+        <div>
+        <header class="header">
+            <div class="container header-wrap">
+                <h1 class="site-name">
+                    <a href="/">
+                        首页
+                    </a>
+                </h1>
+                <ul class="nav">
+                    {{navs}}
+                </ul>
+            </div>
+        </header>
+        </div>
+        <div class="container main">
+        <div class="page-body">
+            <div class="markdown-body">
+                <h1>如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象。</h1>
 <blockquote>
 <p>注1：当我在本文中说 BuckleScript 时，我指的是 OCaml。
 注2：JavaScript对象与 BuckleScript / ReasonML中的 Object 不同。</p>
@@ -128,3 +164,11 @@ end;;
 <p>这意味着我们将 john 绑定到 JavaScript 变量名称 john 并且它有一个 person 类型。</p>
 <h2>总结</h2>
 <p>使用 JavaScript 对象时，可能会试图将其与（Js.t）框一起使用。但是，为了获得 OCaml 类型系统的全部好处，我们宁愿将 Js.t 转换为本地结构。</p>
+
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+
+</html>

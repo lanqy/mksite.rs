@@ -1,4 +1,40 @@
-<h1>理解JS：事件循环</h1>
+<!--
+ * @Author: Leland
+ * @Date: 2019-12-27 15:59:00
+ * @Description: Description
+ -->
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+        <title>理解JS：事件循环</title>
+        <link href="/css/style.css" rel="stylesheet" />
+        <meta name="description" content="理解JS：事件循环">
+    </head>
+
+    <body>
+        <div>
+        <div>
+        <header class="header">
+            <div class="container header-wrap">
+                <h1 class="site-name">
+                    <a href="/">
+                        首页
+                    </a>
+                </h1>
+                <ul class="nav">
+                    {{navs}}
+                </ul>
+            </div>
+        </header>
+        </div>
+        <div class="container main">
+        <div class="page-body">
+            <div class="markdown-body">
+                <h1>理解JS：事件循环</h1>
 <p>译自：https://hackernoon.com/understanding-js-the-event-loop-959beae3ac40</p>
 <p>由于大量的库，工具和各种使您的开发变得更容易的东西，许多程序员开始构建应用程序而不必深入了解某些内容的工作原理。JavaScript 是这种确切行为的典型代表。虽然它是最复杂的语言之一并且传播最广泛，但许多开发人员都被使用更高级别的工具和抽象语言的“坏部分”所吸引。</p>
 <p>虽然您仍然可以构建令人惊叹的应用程序，但进入 JavaScript 漩涡对您来说非常有益。理解“怪异部分”是将普通编码者与高级开发人员分开的原因，而 JS 生态系统不断变化，其基础是构建所有其他工具的基础。了解这些可以让您更广泛地了解并改变您对开发过程的看法。</p>
@@ -21,3 +57,11 @@ console.log('second')
 <p>事件循环行为的另一个有趣的例子是递归。您是否见过堆栈溢出错误消息?当你进行无限递归时，你有时会得到这个结果但有时你会有大量的递归调用。这里有一个简单而简单的解决方案，它将允许您保留代码结构并仍然进行大量调用——在 setTimeout 中包装递归调用。与直接调用 recursion() (设想这是您的方法的名称)相反，您可以调用 setTimeout(() =&gt; recursion(), 0).这将避免堆栈溢出，因为调用将经过事件表和队列，而不是直接堆积在堆栈上。尽量避免使用这种方法，但这是 JavaScript 行为的一个很好的例子。</p>
 <h2>结束</h2>
 <p>还有更多的事情在发生，这只是循环和它周围的一切的基本解释。尽管我希望尽可能地保持简单，但如果不深入整个过程，就无法解释事件循环做了什么。需要注意的是，这个解释是在 V8 JavaScript 引擎的上下文中进行的。它是 Chrome 背后的引擎，也用于 Node。</p>
+
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+
+</html>

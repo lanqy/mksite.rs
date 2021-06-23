@@ -1,4 +1,40 @@
-<h1>在 ReasonReact 中创建全局状态</h1>
+<!--
+ * @Author: Leland
+ * @Date: 2019-12-27 15:59:00
+ * @Description: Description
+ -->
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+        <title>在 ReasonReact 中创建全局状态</title>
+        <link href="/css/style.css" rel="stylesheet" />
+        <meta name="description" content="在 ReasonReact 中创建全局状态">
+    </head>
+
+    <body>
+        <div>
+        <div>
+        <header class="header">
+            <div class="container header-wrap">
+                <h1 class="site-name">
+                    <a href="/">
+                        首页
+                    </a>
+                </h1>
+                <ul class="nav">
+                    {{navs}}
+                </ul>
+            </div>
+        </header>
+        </div>
+        <div class="container main">
+        <div class="page-body">
+            <div class="markdown-body">
+                <h1>在 ReasonReact 中创建全局状态</h1>
 <p>译自：https://medium.com/@Hehk/creating-global-state-in-reasonreact-f84701c6ab6</p>
 <p>默认情况下，ReasonReact 为通过使用 Reducer 组件管理有状态组件提供了一个解决方案。Reducer 组件对于管理整个系统中的小部分状态非常好，但在更大的应用程序中遇到一些严重问题。具有更持久的全局状态，使用减速器体系结构并将状态提升到组件之外将提供两全其美。</p>
 <h2>设置一个基本的 Reducer 组件</h2>
@@ -209,3 +245,11 @@ let make = (~dispatch, ~counterState, _children) =&gt; {
 <p>感谢阅读，我是新来写博客文章，所以希望它并不可怕。我之所以写这篇文章，是因为我是工作范例的忠实粉丝，我找不到更有趣的状态管理。如果您认为有什么不对或可以更好地解释，请告诉我。</p>
 <p>如果您想了解有关使用 reducer 组件的更多信息，请访问https://reasonml.github.io/reason-react/docs/en/state-actions-reducer.html 查看文档。</p>
 <p>此帖子的所有代码均来自以下示例应用：https://github.com/Hehk/example-reason-react-global-state</p>
+
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+
+</html>

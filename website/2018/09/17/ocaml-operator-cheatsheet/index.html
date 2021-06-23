@@ -1,4 +1,40 @@
-<h1>OCaml 操作符备忘单</h1>
+<!--
+ * @Author: Leland
+ * @Date: 2019-12-27 15:59:00
+ * @Description: Description
+ -->
+<!doctype html>
+<html>
+
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+        <title>OCaml 操作符备忘单</title>
+        <link href="/css/style.css" rel="stylesheet" />
+        <meta name="description" content="OCaml 操作符备忘单">
+    </head>
+
+    <body>
+        <div>
+        <div>
+        <header class="header">
+            <div class="container header-wrap">
+                <h1 class="site-name">
+                    <a href="/">
+                        首页
+                    </a>
+                </h1>
+                <ul class="nav">
+                    {{navs}}
+                </ul>
+            </div>
+        </header>
+        </div>
+        <div class="container main">
+        <div class="page-body">
+            <div class="markdown-body">
+                <h1>OCaml 操作符备忘单</h1>
 <p>译自：https://www.brendanlong.com/ocaml-operator-cheatsheet.html</p>
 <p>学习 OCaml 最困难的部分之一就是弄清楚中缀运算符的作用，因为它们只是一串符号而你无法通过谷歌搜索找到它们。这是我试图制作一个备忘单，无论何时你想知道一系列随机符号是什么意思。在此页面上搜索应该找到有关任何常见 OCaml 运算符的基本信息。请注意，某些库定义了自己的运算符，例如 Jane Street 的<a href="https://ocaml.janestreet.com/ocaml-core/latest/doc/core/Core/Command/Spec/index.html#val-(++)">Command.Spec</a> 如何定义 ++，+&gt; 和 +&lt;。</p>
 <h2>关于中缀函数的一般信息</h2>
@@ -119,3 +155,11 @@ val ( =&lt;&gt;@^|&amp;~+-*/$%!?:. ) : int -&gt; int -&gt; int = &lt;fun&gt;
 </blockquote>
 <p>Lwt 没有 Async 的&gt;&gt;=? 或 &gt;&gt;|? 因为 Lwt.t 可以包含错误而没有单独的 Or_error 模块。</p>
 <p>如果您需要有关 map 和 bind 的信息，请参阅上面的 Jane Street Monad 部分。</p>
+
+            </div>
+        </div>
+        </div>
+        </div>
+    </body>
+
+</html>
