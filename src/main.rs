@@ -9,11 +9,10 @@ use comrak::{markdown_to_html, ComrakOptions};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::fs::File;
-use std::io;
 use std::io::Write;
 use std::path::Path;
 use std::str;
-
+use serde_json::Result;
 #[warn(unused_imports)]
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -35,6 +34,7 @@ pub struct Matter {
     author: String,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Post {
     title: String,
     created: String,
@@ -64,16 +64,16 @@ impl std::fmt::Debug for Post {
     }
 }
 
-fn main() {
+fn main()-> Result<()> {
     let config_file = "./config.json";
-    let _data_file = "./data.json";
+    let data_file = "./data.json";
     let file_extension = ".md";
     let json_file_path = Path::new(config_file);
     let file = File::open(json_file_path).expect("file not found");
     let config: Config = serde_json::from_reader(file).expect("error while reading");
     let paths = fs::read_dir(&config.source_dir).unwrap();
     let base_dir: String = config.target_dir.to_owned();
-    let mut posts = Vec::new();
+    let mut posts:Vec<Post> = Vec::new();
     for path in paths {
         let entry = path.unwrap();
         let entry_path = entry.path();
@@ -92,7 +92,10 @@ fn main() {
         );
         posts.push(post);
     }
-    println!("{:?}", &posts);
+    let json = serde_json::to_string(&posts)?;
+    let mut json_file = File::create(&data_file).unwrap();
+    json_file.write_all(json.as_bytes()).unwrap();
+    Ok(())
 }
 
 pub fn make_matter(matter: Vec<&str>) -> Matter {
