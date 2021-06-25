@@ -4,15 +4,14 @@
  * @Description: a static site maker
  */
 extern crate comrak;
-extern crate markdown;
 use comrak::{markdown_to_html, ComrakOptions};
 use serde::{Deserialize, Serialize};
-use std::fs;
+use serde_json::Result;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 use std::str;
-use serde_json::Result;
+use std::{fs, io};
 #[warn(unused_imports)]
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -64,7 +63,7 @@ impl std::fmt::Debug for Post {
     }
 }
 
-fn main()-> Result<()> {
+fn main() -> Result<()> {
     let config_file = "./config.json";
     let data_file = "./data.json";
     let file_extension = ".md";
@@ -73,7 +72,8 @@ fn main()-> Result<()> {
     let config: Config = serde_json::from_reader(file).expect("error while reading");
     let paths = fs::read_dir(&config.source_dir).unwrap();
     let base_dir: String = config.target_dir.to_owned();
-    let mut posts:Vec<Post> = Vec::new();
+    let static_dir: String = config.static_dir.to_owned();
+    let mut posts: Vec<Post> = Vec::new();
     for path in paths {
         let entry = path.unwrap();
         let entry_path = entry.path();
@@ -95,6 +95,7 @@ fn main()-> Result<()> {
     let json = serde_json::to_string(&posts)?;
     let mut json_file = File::create(&data_file).unwrap();
     json_file.write_all(json.as_bytes()).unwrap();
+    copy_dir_all(static_dir, base_dir);
     Ok(())
 }
 
@@ -161,6 +162,20 @@ pub fn create_post(
         .replace("{{description}}", &matter.description);
     file.write_all(htmls.as_bytes()).unwrap();
     post
+}
+
+pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> io::Result<()> {
+    fs::create_dir_all(&dst)?;
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let ty = entry.file_type()?;
+        if ty.is_dir() {
+            copy_dir_all(entry.path(), dst.as_ref().join(entry.file_name()))?;
+        } else {
+            fs::copy(entry.path(), dst.as_ref().join(entry.file_name()))?;
+        }
+    }
+    Ok(())
 }
 
 pub fn parse_front_matter(contents: &str) -> Vec<&str> {
