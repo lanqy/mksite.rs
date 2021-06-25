@@ -71,9 +71,54 @@ fn main() -> Result<()> {
     let file = File::open(json_file_path).expect("file not found");
     let config: Config = serde_json::from_reader(file).expect("error while reading");
     let paths = fs::read_dir(&config.source_dir).unwrap();
+    let source_vec: Vec<&str> = config.source_dir.split("/").collect();
+    let page_paths = fs::read_dir(&source_vec[0].to_string()).unwrap();
+    let page_paths_for_post = fs::read_dir(&source_vec[0].to_string()).unwrap();
     let base_dir: String = config.target_dir.to_owned();
     let static_dir: String = config.static_dir.to_owned();
     let mut posts: Vec<Post> = Vec::new();
+    let mut nav_html_string = String::new();
+
+    for page_path in page_paths {
+        let page_path = page_path.unwrap();
+        let page_entry_path = page_path.path();
+        if !page_entry_path.is_dir() {
+            let file_name = page_entry_path.file_name().unwrap();
+            let file_name_as_str = file_name.to_str().unwrap();
+            let file_name_as_string = String::from(file_name_as_str).replace(file_extension, "");
+            let markdown_content = std::fs::read_to_string(&page_entry_path).unwrap();
+            let path_file = Path::new("/").join(&file_name_as_string);
+            let front_matter_as_vec_str = parse_front_matter(&markdown_content);
+            let matter = make_matter(front_matter_as_vec_str);
+            let nav_template_file = std::fs::read_to_string(&config.nav_template_file).unwrap();
+            let nav_html = nav_template_file
+                .replace("{{link}}", &path_file.to_str().unwrap())
+                .replace("{{title}}", &matter.title);
+            nav_html_string.push_str(&nav_html);
+        }
+    }
+
+    for page_path_for_post in page_paths_for_post {
+        let page_path = page_path_for_post.unwrap();
+        let page_entry_path = page_path.path();
+        if !page_entry_path.is_dir() {
+            let file_name = page_entry_path.file_name().unwrap();
+            let file_name_as_str = file_name.to_str().unwrap();
+            let file_name_as_string = String::from(file_name_as_str).replace(file_extension, "");
+            let markdown_content = std::fs::read_to_string(&page_entry_path).unwrap();
+            let front_matter_as_vec_str = parse_front_matter(&markdown_content);
+            let matter = make_matter(front_matter_as_vec_str);
+            create_html(
+                &matter,
+                &file_name_as_string,
+                &markdown_content,
+                &base_dir,
+                &config,
+                &nav_html_string,
+            );
+        }
+    }
+
     for path in paths {
         let entry = path.unwrap();
         let entry_path = entry.path();
@@ -83,20 +128,46 @@ fn main() -> Result<()> {
         let markdown_content = std::fs::read_to_string(&entry_path).unwrap();
         let front_matter_as_vec_str = parse_front_matter(&markdown_content);
         let matter = make_matter(front_matter_as_vec_str);
-        let post = create_post(
+        let post = create_html(
             &matter,
             &file_name_as_string,
             &markdown_content,
             &base_dir,
             &config,
+            &nav_html_string,
         );
         posts.push(post);
     }
+    posts.sort_by(|a, b| b.created.cmp(&a.created)); // sort by created field
+    make_index_file(&posts, &config, &nav_html_string, &base_dir);
     let json = serde_json::to_string(&posts)?;
     let mut json_file = File::create(&data_file).unwrap();
     json_file.write_all(json.as_bytes()).unwrap();
-    copy_dir_all(static_dir, base_dir);
+    let _copy_dir = copy_dir_all(static_dir, base_dir); // copy static file in to website folder
     Ok(())
+}
+
+pub fn make_index_file(posts: &Vec<Post>, config: &Config, nav_html_string: &str, base_dir: &str) {
+    let item_template_file = std::fs::read_to_string(&config.item_template_file).unwrap();
+    let index_template_file = std::fs::read_to_string(&config.index_template_file).unwrap();
+    let mut item_html_string = String::new();
+    let index_file = "index.html".to_string();
+    let dest = Path::join(Path::new(&base_dir), Path::new(&index_file));
+    let mut file = File::create(&dest).unwrap();
+    for post in posts.iter() {
+        let item_html = item_template_file
+            .replace("{{link}}", &post.link)
+            .replace("{{created}}", &post.created)
+            .replace("{{title}}", &post.title);
+        item_html_string.push_str(&item_html);
+    }
+
+    let index_html = index_template_file
+        .replace("{{siteName}}", &config.site_name)
+        .replace("{{navs}}", &nav_html_string)
+        .replace("{{lists}}", &item_html_string);
+
+    file.write_all(index_html.as_bytes()).unwrap();
 }
 
 pub fn make_matter(matter: Vec<&str>) -> Matter {
@@ -108,33 +179,36 @@ pub fn make_matter(matter: Vec<&str>) -> Matter {
     };
 
     for x in matter.iter() {
+        let vec: Vec<&str> = x.split(":").collect();
         if x.contains("created") {
-            let vec: Vec<&str> = x.split(":").collect();
             matter_item.created = (&vec[1].trim()).to_string();
         }
         if x.contains("title") {
-            let vec: Vec<&str> = x.split(":").collect();
             matter_item.title = (&vec[1].trim()).to_string();
         }
         if x.contains("description") {
-            let vec: Vec<&str> = x.split(":").collect();
             matter_item.description = (&vec[1].trim()).to_string();
         }
         if x.contains("author") {
-            let vec: Vec<&str> = x.split(":").collect();
             matter_item.author = (&vec[1].trim()).to_string();
         }
     }
     matter_item
 }
 
-pub fn create_post(
+pub fn create_html(
     matter: &Matter,
     file_name: &str,
     content: &str,
     base_dir: &str,
     config: &Config,
+    nav_html_string: &str,
 ) -> Post {
+    let body_place_holder: String = "{{body}}".to_string();
+    let title_place_holder: String = "{{title}}".to_string();
+    let description_place_holder: String = "{{description}}".to_string();
+    let navs_place_holder: String = "{{navs}}".to_string();
+    let index_html = "index.html".to_string();
     let mut options = ComrakOptions::default();
     options.extension.front_matter_delimiter = Some("---".to_owned());
     let path = Path::join(Path::new(&matter.created), Path::new(&file_name));
@@ -142,7 +216,7 @@ pub fn create_post(
     let dest = Path::join(Path::new(&base_dir), Path::new(&path));
     fs::create_dir_all(&dest).unwrap();
     let post_template_file = std::fs::read_to_string(&config.post_template_file).unwrap();
-    let html_file = Path::new(&dest).join("index.html");
+    let html_file = Path::new(&dest).join(index_html);
     let mut file = File::create(&html_file).unwrap();
     let mut post = Post {
         title: String::from(&matter.title),
@@ -157,9 +231,10 @@ pub fn create_post(
     post.link = path.as_path().display().to_string().replace("\\", "/");
 
     let htmls = post_template_file
-        .replace("{{body}}", html.as_str())
-        .replace("{{title}}", &matter.title)
-        .replace("{{description}}", &matter.description);
+        .replace(&body_place_holder, html.as_str())
+        .replace(&title_place_holder, &matter.title)
+        .replace(&description_place_holder, &matter.description)
+        .replace(&navs_place_holder, &nav_html_string);
     file.write_all(htmls.as_bytes()).unwrap();
     post
 }
