@@ -1,0 +1,685 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<feed xmlns='http://www.w3.org/2005/Atom'>
+    <title>
+        site name here
+    </title>
+    <summary>
+        site name here
+    </summary>
+    <link href='https://lanqy.cn'/>
+    <entry>
+        <title>
+            HTML5 Canvas的命中区域检测以及如何侦听Canvas形状上的Click事件
+        </title>
+        <link href='2020/12/09/hit-region-detection-for-html5-canvas-and-how-to-listen-to-click-events-on-canvas-shapes'/>
+        <summary>
+            HTML5 Canvas的命中区域检测以及如何侦听Canvas形状上的Click事件
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2020/12/09
+        </created>
+    </entry>
+    <entry>
+        <title>
+            git 常用命令
+        </title>
+        <link href='2019/12/27/git-common-commands'/>
+        <summary>
+            git 常用命令
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2019/12/27
+        </created>
+    </entry>
+    <entry>
+        <title>
+            ES6：var，let和const - 函数作用域和块范围之间的争斗
+        </title>
+        <link href='2018/11/21/es6-var-let-and-const-the-battle-between-function-scope-and-block-scope'/>
+        <summary>
+            ES6：var，let和const - 函数作用域和块范围之间的争斗TypeScript
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/11/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml 符号
+        </title>
+        <link href='2018/10/23/OCaml-symbols'/>
+        <summary>
+            OCaml 符号
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/10/23
+        </created>
+    </entry>
+    <entry>
+        <title>
+            JavaScript 的工作原理：引擎，运行时和调用堆栈的概述
+        </title>
+        <link href='2018/10/22/how-does-javascript-actually-work'/>
+        <summary>
+            JavaScript 的工作原理：引擎，运行时和调用堆栈的概述
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/10/22
+        </created>
+    </entry>
+    <entry>
+        <title>
+            理解 JavaScript 调用堆栈
+        </title>
+        <link href='2018/10/22/understanding-the-javascript-call-stack'/>
+        <summary>
+            理解 JavaScript 调用堆栈
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/10/22
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml 操作符备忘单
+        </title>
+        <link href='2018/09/17/ocaml-operator-cheatsheet'/>
+        <summary>
+            OCaml 操作符备忘单
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/09/17
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml -ppx 语言扩展教程
+        </title>
+        <link href='2018/09/17/ppx-tutorial'/>
+        <summary>
+            OCaml -ppx 语言扩展教程
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/09/17
+        </created>
+    </entry>
+    <entry>
+        <title>
+            使用 Rebar3 构建您的第一个 Erlang 应用程序
+        </title>
+        <link href='2018/08/10/building-your-first-erlang-app-using-rebar3'/>
+        <summary>
+            使用 Rebar3 构建您的第一个 Erlang 应用程序
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/08/10
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Erlang maps 函数 “简单” 的解释
+        </title>
+        <link href='2018/08/01/erlang-maps-function-simple-explanation'/>
+        <summary>
+            Erlang maps 函数 “简单” 的解释
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/08/01
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Erlang 入门
+        </title>
+        <link href='2018/07/31/getting-start-erlang'/>
+        <summary>
+            Erlang 入门
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/31
+        </created>
+    </entry>
+    <entry>
+        <title>
+            理解JS：事件循环
+        </title>
+        <link href='2018/07/26/understanding-js-the-event-loop'/>
+        <summary>
+            理解JS：事件循环
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/26
+        </created>
+    </entry>
+    <entry>
+        <title>
+            F# 备忘单
+        </title>
+        <link href='2018/07/19/fsharp-cheatsheet'/>
+        <summary>
+            F# 备忘单
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/19
+        </created>
+    </entry>
+    <entry>
+        <title>
+            使用 Erlang / OTP 构建您的第一个多用户聊天室应用程序
+        </title>
+        <link href='2018/07/18/build-your-first-multi-user-chat-room-app-with-erlang-otp'/>
+        <summary>
+            使用 Erlang / OTP 构建您的第一个多用户聊天室应用程序
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/18
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml简介第6部分
+        </title>
+        <link href='2018/07/17/getting_started6'/>
+        <summary>
+            OCaml简介第6部分
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/17
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml简介第5部分
+        </title>
+        <link href='2018/07/16/getting_started5'/>
+        <summary>
+            OCaml简介第5部分
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/16
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml简介第4部分
+        </title>
+        <link href='2018/07/15/getting_started4'/>
+        <summary>
+            OCaml简介第4部分
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/15
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml简介第3部分
+        </title>
+        <link href='2018/07/14/getting_started3'/>
+        <summary>
+            OCaml简介第3部分
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/14
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml简介第2部分
+        </title>
+        <link href='2018/07/13/getting_started2'/>
+        <summary>
+            OCaml简介第2部分
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/13
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml简介第1部分
+        </title>
+        <link href='2018/07/12/getting_started1'/>
+        <summary>
+            OCaml简介第1部分
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/12
+        </created>
+    </entry>
+    <entry>
+        <title>
+            编程规则和约定
+        </title>
+        <link href='2018/07/05/erlang-programming-rules'/>
+        <summary>
+            编程规则和约定
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/07/05
+        </created>
+    </entry>
+    <entry>
+        <title>
+            在 ReasonReact 中创建全局状态
+        </title>
+        <link href='2018/06/21/creating-global-state-in-reasonreact'/>
+        <summary>
+            在 ReasonReact 中创建全局状态
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/06/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象
+        </title>
+        <link href='2018/06/15/how-to-bind-bucklescript-reasonml-objects-to-javascript-objects'/>
+        <summary>
+            如何将 BuckleScript / ReasonML 对象绑定到 JavaScript 对象
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/06/15
+        </created>
+    </entry>
+    <entry>
+        <title>
+            ReasonML：为 NPM 包创建绑定
+        </title>
+        <link href='2018/06/15/reasonml-create-bindings-for-npm-package'/>
+        <summary>
+            ReasonML：为 NPM 包创建绑定
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/06/15
+        </created>
+    </entry>
+    <entry>
+        <title>
+            ReasonML PPX
+        </title>
+        <link href='2018/06/15/reasonml-ppx'/>
+        <summary>
+            ReasonML PPX
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/06/15
+        </created>
+    </entry>
+    <entry>
+        <title>
+            开始使用 ReasonML 和 React Native
+        </title>
+        <link href='2018/05/30/getting-started-with-reasonml-and-react-native'/>
+        <summary>
+            开始使用 ReasonML 和 React Native
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/30
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Reason 入门手册
+        </title>
+        <link href='2018/05/30/reason-in-nutshell-getting-started-guide'/>
+        <summary>
+            Reason 入门手册
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/30
+        </created>
+    </entry>
+    <entry>
+        <title>
+            在 ReasonReact中解码 JSON
+        </title>
+        <link href='2018/05/28/decoding-json-in-reasonreact'/>
+        <summary>
+            在 ReasonReact中解码 JSON
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/28
+        </created>
+    </entry>
+    <entry>
+        <title>
+            OCaml 符号ReasonML 中的持久性 React Native Apps
+        </title>
+        <link href='2018/05/28/persistence-in-reasonml-react-native-apps'/>
+        <summary>
+            ReasonML 中的持久性 React Native Apps
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/28
+        </created>
+    </entry>
+    <entry>
+        <title>
+            ReasonML 入门
+        </title>
+        <link href='2018/05/28/reasonml-getting-started'/>
+        <summary>
+            ReasonML 入门
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/28
+        </created>
+    </entry>
+    <entry>
+        <title>
+            ReasonML - React 为首要目标
+        </title>
+        <link href='2018/05/28/reasonml-react-as-first-intended'/>
+        <summary>
+            ReasonML - React 为首要目标
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/28
+        </created>
+    </entry>
+    <entry>
+        <title>
+            BuckleScript 绑定技巧
+        </title>
+        <link href='2018/05/25/bucklescript-binding-tips'/>
+        <summary>
+            BuckleScript 绑定技巧
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/25
+        </created>
+    </entry>
+    <entry>
+        <title>
+            傻瓜式类型安全绑定从 JS 到 Reason
+        </title>
+        <link href='2018/05/25/externals-js-ffi-reason'/>
+        <summary>
+            傻瓜式类型安全绑定从 JS 到 Reason
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/25
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Reason 中的多态性与普通变体
+        </title>
+        <link href='2018/05/25/polymorphic-variants'/>
+        <summary>
+            Reason 中的多态性与普通变体
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/25
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Webpack 给初学者
+        </title>
+        <link href='2018/05/25/webpack-for-beginners'/>
+        <summary>
+            Webpack 给初学者
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/25
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Reason 基础知识
+        </title>
+        <link href='2018/05/23/reason-basics'/>
+        <summary>
+            Reason 基础知识
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/23
+        </created>
+    </entry>
+    <entry>
+        <title>
+            给 create-react-app 创建的项目，加上热加载功能
+        </title>
+        <link href='2018/05/21/adding-hot-module-reloading-to-create-react-app'/>
+        <summary>
+            给 create-react-app 创建的项目，加上热加载功能
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            构建一个基于 Redux 的 react 应用
+        </title>
+        <link href='2018/05/21/build-redux-react-application'/>
+        <summary>
+            构建一个基于 Redux 的 react 应用
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            使用 Gruntjs 压缩合并前端静态资源（图片、JavaScript 和 CSS ）
+        </title>
+        <link href='2018/05/21/grunt-example'/>
+        <summary>
+            使用 Gruntjs 压缩合并前端静态资源（图片、JavaScript 和 CSS ）
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            通过代数数据类型和模式匹配进行语言比较：Koka，Rust，Haxe，Swift，Elm，PureScript，Haskell，OCaml，ReasonML，Kotlin，Scala，Dotty，Ruby，TypeScript
+        </title>
+        <link href='2018/05/21/language-comparison'/>
+        <summary>
+            通过代数数据类型和模式匹配进行语言比较：Koka，Rust，Haxe，Swift，Elm，PureScript，Haskell，OCaml，ReasonML，Kotlin，Scala，Dotty，Ruby，TypeScript
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            用 Javascript 编写一个编译器
+        </title>
+        <link href='2018/05/21/make-a-compiler-with-javascript'/>
+        <summary>
+            用 Javascript 编写一个编译器
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            Linux 下重新启动 Nginx web 服务器
+        </title>
+        <link href='2018/05/21/nginx-linux-restart'/>
+        <summary>
+            Linux 下重新启动 Nginx web 服务器
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            一步一步教你创建 react redux 应用
+        </title>
+        <link href='2018/05/21/step-by-step-react-redux'/>
+        <summary>
+            一步一步教你创建 react redux 应用
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            理解 CSS 特异性的复杂性
+        </title>
+        <link href='2018/05/21/understanding-the-complexity-of-css-specificity'/>
+        <summary>
+            理解 CSS 特异性的复杂性
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2018/05/21
+        </created>
+    </entry>
+    <entry>
+        <title>
+            React 生态系统入门第一部分（共三个部分）
+        </title>
+        <link href='2016/07/14/a-primer-on-the-react-rcosystem-part1'/>
+        <summary>
+            React 生态系统入门第一部分（共三个部分）
+        </summary>
+        <author>
+            lanqy
+        </author>
+        <created>
+            2016/07/14
+        </created>
+    </entry>
+</feed>
