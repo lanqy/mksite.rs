@@ -12,6 +12,7 @@ use std::io::Write;
 use std::path::Path;
 use std::str;
 use std::{fs, io};
+use xmlwriter::*;
 #[warn(unused_imports)]
 #[derive(Serialize, Deserialize)]
 pub struct Config {
@@ -154,13 +155,64 @@ pub fn make_index_file(posts: &Vec<Post>, config: &Config, nav_html_string: &str
     let index_file = "index.html".to_string();
     let dest = Path::join(Path::new(&base_dir), Path::new(&index_file));
     let mut file = File::create(&dest).unwrap();
+
+    let opt = Options {
+        use_single_quote: true,
+        ..Options::default()
+    };
+    let mut w = XmlWriter::new(opt);
+    w.write_declaration();
+    w.start_element("feed");
+    w.write_attribute("xmlns", "http://www.w3.org/2005/Atom");
+
+    w.start_element("title");
+    w.write_text(&config.site_name);
+    w.end_element();
+
+    w.start_element("summary");
+    w.write_text(&config.site_name);
+    w.end_element();
+
+    w.start_element("link");
+    w.write_attribute("href", &config.base_url);
+    w.end_element();
+
     for post in posts.iter() {
         let item_html = item_template_file
             .replace("{{link}}", &post.link)
             .replace("{{created}}", &post.created)
             .replace("{{title}}", &post.title);
         item_html_string.push_str(&item_html);
+
+        w.start_element("entry");
+        w.start_element("title");
+        w.write_text(&post.title);
+        w.end_element();
+
+        w.start_element("link");
+        w.write_attribute("href", &post.link);
+        w.end_element();
+
+        w.start_element("summary");
+        w.write_text(&post.description);
+        w.end_element();
+
+        w.start_element("author");
+        w.write_text(&post.author);
+        w.end_element();
+
+        w.start_element("created");
+        w.write_text(&post.created);
+        w.end_element();
+
+        w.end_element();
     }
+
+    w.end_element();
+
+    let mut atom_file = File::create("./atom.xml").unwrap();
+
+    atom_file.write_all(w.end_document().as_bytes()).unwrap();
 
     let index_html = index_template_file
         .replace("{{siteName}}", &config.site_name)
