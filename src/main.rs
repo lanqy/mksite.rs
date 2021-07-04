@@ -305,6 +305,8 @@ pub fn copy_dir_all(src: impl AsRef<Path>, dst: impl AsRef<Path>) -> io::Result<
     Ok(())
 }
 
+// form https://github.com/mattdamon108/rust_front_matter_parser
+// Thanks mattdamon108
 pub fn parse_front_matter(contents: &str) -> Vec<&str> {
     let mut is_front_matter: bool = false;
     let mut counter_meet_delimiter: u8 = 0;
