@@ -263,6 +263,7 @@ pub fn create_html(
     let index_html = "index.html".to_string();
     let mut options = ComrakOptions::default();
     options.extension.front_matter_delimiter = Some("---".to_owned());
+    options.render.unsafe_ = true;
     let path = Path::join(Path::new(&matter.created), Path::new(&file_name));
     let html = markdown_to_html(&content, &options);
     let dest = Path::join(Path::new(&base_dir), Path::new(&path));
