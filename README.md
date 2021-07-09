@@ -1,5 +1,4 @@
 # mksite.rs
-# mksite
 
 Rust 的静态网站生成器
 
@@ -109,14 +108,10 @@ Rust 的静态网站生成器
 </div>
 ```
 
-### 安装模块
-
-`npm install`
-
 ### 运行
 
 ```
-node ./index.js
+cargo run
 ```
 
 - golang 版本： https://github.com/lanqy/mksite.go
