@@ -14,15 +14,15 @@ Rust 的静态网站生成器
 
 ```json
 {
-    "siteName": "site name here",
-    "staticDir": "static",
-    "baseUrl": "https://lanqy.xyz", // 用于生成 atom.xml
-    "sourceDir": "source/_posts",
-    "targetDir": "website",
-    "navTemplateFile": "template/nav.html", // 导航模板
-    "postTemplateFile": "template/post.html", // 文章模板
-    "indexTemplateFile": "template/index.html", // 首页模板
-    "itemTemplateFile": "template/item.html" // 列表模板
+	"site_name": "site name here",
+	"static_dir": "static",
+	"base_url": "https://lanqy.cn",
+	"source_dir": "source/_posts",
+	"target_dir": "./website/",
+	"nav_template_file": "template/nav.html",
+	"post_template_file": "template/post.html",
+	"index_template_file": "template/index.html",
+	"item_template_file": "template/item.html" 
 }
 ```
 
